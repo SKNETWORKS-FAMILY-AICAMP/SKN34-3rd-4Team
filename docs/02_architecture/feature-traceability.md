@@ -1,7 +1,7 @@
 # Feature / Implementation / Test Traceability
 
 > Status: Current Submission Traceability
-> Implementation Baseline: `gyuniverse-hq/bid-change-validator` `develop@cafd5dba82a54e467eb59e9578995d3362c5ca9b`
+> Implementation Baseline: `gyuniverse-hq/bid-change-validator` `develop@36f1afba8e1a025006b0bfa1876502e6232b3d28`
 
 ## 1. 문서 목적
 
@@ -37,7 +37,7 @@ Requirement / Product Invariant
 | CUR-COM-01 | 회사 Profile·실적·인증 관리 | Current | `/company` | `/api/v1/companies/**`, `routers/companies.py` | `companies`, Company Industry / Performance / Certification | Judgment 입력 | `test_companies.py` | Human Click 대기 | 전체 CRUD·검증 메시지 E2E |
 | CUR-COM-02 | 현재 Profile과 판정 Snapshot 분리 | Current | `/company`, `/qualification` | Judgment Service, Profile Completeness API | `qualification_judgment_runs.profile_snapshot` | deterministic Judgment | `test_qualification_judgment.py`, `case-workspace.test.cjs` | G0 회귀 | Profile 변경 후 전체 재판정 사용자 흐름 |
 | CUR-ANL-01 | Requirement·Evidence 구조화 | Current | `/qualification` | `POST .../qualification-analysis`, `qualification/analysis.py` | `qualification_analysis_runs`, `qualification_requirements`, `qualification_evidence` | Extraction → Grounding → Canonicalization | `test_analysis_pipeline.py`, `test_requirement_extraction.py`, `test_ai_integration.py` | G1 Snapshot 존재 | 실공고 승인 라벨과 field-level 품질 확정 |
-| CUR-ANL-02 | 분석 상태·최신성·중복 실행 제어 | Current | `/qualification` | Analysis trigger/list/detail API | Analysis `SUCCEEDED / PARTIAL / FAILED`, Version 연결 | Grounding Diagnostic | `test_qualification_analysis_service.py`, Product Regression | 자동 회귀 | 동시 실행·실패 복구 운영 검증 |
+| CUR-ANL-02 | 분석 상태·같은 차수의 이중 실행 방지 | Current | `/qualification` | Analysis API + `case-workspace.ts`, Case 생성 validation | Analysis 3상태, baseline/current Version | Grounding Diagnostic | `test_qualification_analysis_service.py`, `test_product_baseline_regression.py`, `test_seed_golden_v02_accounts.py` | PR #137 자동 회귀 | 화면의 baseline=current 처리이며 Analysis API 전반의 멱등성·동시 요청 잠금은 미보장 |
 | CUR-JDG-01 | 결정론적 참가자격 판정 | Current | `/qualification` | `POST /api/v1/preflight-cases/{case_id}/qualification-judgments` | `qualification_judgment_runs`, `qualification_judgments` | `qualification/rules/judgment.py` | `test_qualification_judgment.py` | G0 Golden 회귀 | Fixture 독립 승인과 실공고 Coverage 확대 |
 | CUR-JDG-02 | Judgment·Overall·Basis 상태 분리 | Current | `/qualification` | Judgment Run list/detail | 3상태, Overall 3상태, `basis_type`, `reason_code` | Overall derivation Rule | `test_qualification_judgment.py`, `test_product_baseline_regression.py` | G0 회귀 | 전체 UI 상태 표현 Human 검산 |
 | CUR-ASK-01 | 안전한 Askability 분류 | Current | `/ask-back` | `GET .../qualification-questions`, `qualification/ask_back.py` | Judgment `UNKNOWN`, Profile Completeness | `rules/askability.py`, `rules/clause_safety.py` | `test_askability.py`, Judgment Regression | G0 회귀 | 실제 공고 질문 가능성 Human 검수 |
@@ -73,9 +73,9 @@ BidNotice
 
 Company + PreflightCase + AnalysisRun
 └─ QualificationJudgmentRun (profile_snapshot, rule_version)
-   └─ QualificationJudgmentRecord
-      ├─ QualificationAnswer → result JudgmentRun
-      └─ QualificationRevalidationRun → result JudgmentRun
+   ├─ QualificationJudgmentRecord
+   ├─ QualificationAnswer → result JudgmentRun
+   └─ QualificationRevalidationRun → result JudgmentRun
 ```
 
 02~06 화면은 같은 `preflight_case_id`를 공유합니다. Frontend `apps/web/lib/case-workspace.ts`는 현재 Version과 호환되는 Analysis / Judgment를 선택하며, 기준 판정을 현재 결과로 대신 사용하지 않습니다.
@@ -93,3 +93,11 @@ Company + PreflightCase + AnalysisRun
 ## 8. 검증 원칙
 
 확인하지 않은 구현이나 수치는 완료로 표현하지 않는다. Test 파일의 존재는 해당 테스트가 현재 CI에서 통과했거나 Human E2E가 완료됐다는 주장으로 확장하지 않는다.
+
+## 9. 근거 탐색과 실행 범위
+
+표의 `routers/`, `qualification/`, `copilot/`, 모델 파일은 [Backend app](https://github.com/gyuniverse-hq/bid-change-validator/tree/36f1afba8e1a025006b0bfa1876502e6232b3d28/apps/api/app) 기준입니다. `test_*.py`는 [Backend tests](https://github.com/gyuniverse-hq/bid-change-validator/tree/36f1afba8e1a025006b0bfa1876502e6232b3d28/apps/api/tests), `.test.cjs`는 [Web tests](https://github.com/gyuniverse-hq/bid-change-validator/tree/36f1afba8e1a025006b0bfa1876502e6232b3d28/apps/web/tests) 기준입니다. Product Regression은 `test_product_baseline_regression.py`, Copilot Flow는 `test_copilot_flow.py`, Document QA는 `test_copilot_grounded_document_qa.py`를 뜻합니다.
+
+최신 SHA에서 독립 확인한 CI 실행은 Golden 안전성 70개와 Rule Fixture gate입니다. 전체 Backend 742개와 Frontend build는 PR #135의 통합 CI 기록으로 출처를 분리합니다. 정확한 Run ID·경고·lint 실패는 [테스트 결과](../08_qa_reports/test-plan-and-results.md)에 기록했습니다. 자동 검증 열은 파일 매핑이며 각 기능의 Human 완료율이 아닙니다.
+
+`CUR-NFR-05`의 현재 Rule은 v0.3입니다. `CUR-NFR-06`은 인증 guard의 구현 근거이며 `AUTH_REQUIRED=false` 개발 기본값에서 운영 보안을 보장한다는 뜻이 아닙니다. 위 Lineage는 처리 관계이며 물리 FK는 [ERD](../04_contracts/db-erd-current.md)에서 구분합니다.

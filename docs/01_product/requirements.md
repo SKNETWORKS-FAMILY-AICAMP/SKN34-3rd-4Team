@@ -1,7 +1,8 @@
 # 요구사항 명세
 
 > Status: Current Submission Specification
-> Implementation Baseline: `gyuniverse-hq/bid-change-validator` `develop@cafd5dba82a54e467eb59e9578995d3362c5ca9b`
+> Implementation Baseline: `gyuniverse-hq/bid-change-validator` `develop@36f1afba8e1a025006b0bfa1876502e6232b3d28`
+> 확인일: 2026-09-14 KST · 구현 상태와 검증 상태는 별도 축입니다.
 
 ## 1. 문서 목적
 
@@ -23,6 +24,7 @@
 | Current | 코드와 자동 테스트 또는 명시된 구현 근거가 현재 `develop`에서 확인됨 |
 | Partial | 일부 경로만 구현됐거나 제품 전체 연결·검증이 남아 있음 |
 | Pending | 범위 또는 완료 근거가 아직 확정되지 않음 |
+| Validation Pending | 구현은 확인했지만 독립 라벨·실공고·사용자·배포 검증이 남아 있음 |
 | Superseded | 초기 요구가 현재 정책으로 대체됨 |
 | Out of Scope / Future | 현재 MVP에 포함하지 않고 향후 검토함 |
 
@@ -67,7 +69,7 @@
 | CUR-NFR-03 | 공고·분석·판정·재검증 이력을 덮어쓰지 않는다. | Notice Version과 Analysis / Judgment / Revalidation Run ID로 기준·현재 결과를 구분할 수 있다. | Current | `models.py`, `analysis_models.py`, `judgment_models.py`, `revalidation_models.py` |
 | CUR-NFR-04 | 불명확한 조건을 확정 판정이나 무분별한 질문으로 바꾸지 않는다. | 복합·예외·근거 부족 조건은 `UNKNOWN` 또는 직접 확인으로 남고 Askability Guard를 통과한 단일 사실만 질문한다. | Current | `rules/askability.py`, `rules/clause_safety.py`, `test_askability.py` |
 | CUR-NFR-05 | 오래되거나 변경된 문맥으로 쓰기 작업을 수행하지 않는다. | Analysis, Judgment, Company Snapshot, Rule Version 또는 기준일이 달라지면 Ask-back/Revalidation을 거부하거나 전체 재판정을 요구한다. | Current | `qualification/ask_back.py`, `qualification/revalidation.py`, Copilot Action Test |
-| CUR-NFR-06 | 사용자·회사·Case 접근 경계를 확인한다. | 보호 API가 인증 문맥을 사용하고 다른 회사 또는 Case 접근을 거부하는 자동 테스트가 존재한다. | Current | `auth.py`, `main.py`, `test_auth.py`, `test_copilot_flow.py` |
+| CUR-NFR-06 | 사용자·회사·Case 접근 경계를 확인한다. | 보호 API의 인증·소유권 거부 경로를 구현한다. `AUTH_REQUIRED=false` 개발 기본값과 운영 인증 설정을 구분한다. 운영 안전성 승인은 배포 Smoke 후 가능하다. | Current / 운영 Validation Pending | `auth.py`, `main.py`, `config.py`, `test_auth.py`, `test_copilot_flow.py` |
 
 ## 5. 기능 요구사항
 
@@ -91,7 +93,7 @@
 | ID | 요구사항 | Acceptance Criteria | 상태 | 관련 Route |
 | --- | --- | --- | --- | --- |
 | CUR-ANL-01 | 추출된 공고문에서 Requirement와 Evidence를 구조화한다. | Analysis Run이 Canonical 8유형의 Requirement와 Evidence locator를 저장하고 조회 API로 반환한다. | Current | `/qualification` |
-| CUR-ANL-02 | 분석 성공·부분 성공·실패를 구분하고 동일 차수의 중복 실행을 제어한다. | `SUCCEEDED / PARTIAL / FAILED`가 보존되고 최신 호환 Analysis를 사용하며 동일 Version의 중복 실행을 방지한다. | Current | `/qualification` |
+| CUR-ANL-02 | 분석 상태를 보존하고 동일 차수를 기준/현재로 이중 실행하는 화면 흐름을 막는다. | `SUCCEEDED / PARTIAL / FAILED` 보존. 신규 Case는 baseline이 current보다 이전이어야 하며, 기존 baseline=current Case의 화면 작업은 한 번 실행한다. Analysis POST 전체의 멱등성·분산 동시 실행 잠금을 보장하는 요구로 확대하지 않는다. | Current / 범용 중복 요청 제어 Pending | `/qualification` |
 | CUR-JDG-01 | 회사 Profile을 Canonical Requirement와 결정론적으로 비교한다. | LLM 출력이 아닌 Rule Engine이 Requirement별 판정을 생성하고 Rule Version을 기록한다. | Current | `/qualification` |
 | CUR-JDG-02 | 개별 판정, 전체 판정, 판정 근거 축을 분리한다. | 개별 상태는 `SATISFIED / UNSATISFIED / UNKNOWN`, 전체 상태는 `eligible / ineligible / insufficient_data`, 근거는 `basis_type`으로 표현한다. | Current | `/qualification` |
 
@@ -115,7 +117,7 @@ Canonical Requirement 8유형은 `PERFORMANCE_AMOUNT`, `PERFORMANCE_COUNT`, `IND
 | ID | 요구사항 | Acceptance Criteria | 상태 | 관련 Route |
 | --- | --- | --- | --- | --- |
 | CUR-CHG-01 | 이전·현재 Requirement를 의미 단위로 비교한다. | 각 Requirement를 `UNCHANGED / MODIFIED / ADDED / REMOVED`로 분류하고 변경 전·후 구조를 보존한다. | Current | `/changes` |
-| CUR-CHG-02 | 영향을 받은 Requirement만 다시 판정한다. | 변경되지 않은 판정은 승계하고 `MODIFIED / ADDED`를 재판정한다. Profile Snapshot, Rule Version 또는 기준일 변경 시 전체 재판정을 요구한다. | Current | `/changes` |
+| CUR-CHG-02 | 영향을 받은 Requirement만 다시 판정한다. | `UNCHANGED`는 대응하는 이전 판정이 있으면 현재 Evidence key로 승계한다. `MODIFIED / ADDED` 및 이전 판정이 없는 현재 요건은 재판정한다. `REMOVED`는 이력에만 남는다. Profile Snapshot, Rule Version 또는 기준일 변경 시 전체 재판정을 요구한다. | Current / G2 Validation Pending | `/changes` |
 
 ### 5.7 AI Copilot
 
@@ -147,3 +149,16 @@ Canonical Requirement 8유형은 `PERFORMANCE_AMOUNT`, `PERFORMANCE_COUNT`, `IND
 최종 MVP의 중심은 **공고 Version별 Requirement / Evidence를 구조화하고 회사 Snapshot으로 판정한 뒤, 변경공고에서 영향받은 Requirement만 재검증하는 것**입니다.
 
 자동 테스트는 구현 회귀 근거이며 Human Click E2E, 실제 공고 G1/G2 Ground Truth, 사용자 Task 평가, Deployment Smoke 완료를 대신하지 않습니다. 확인하지 않은 구현이나 수치는 완료로 표현하지 않습니다.
+
+## 8. 기준선 변경과 수용 판정
+
+PR #135 반영 후 현재 Rule은 `qualification-rules-v0.3`입니다. 과거 v0.2 결과는 삭제하지 않지만 현재 화면·Copilot의 판정 source와 affected-only 재검증에서 제외합니다. 호환 결과가 없으면 전체 재판정을 요구합니다.
+
+각 행의 Acceptance Criteria는 기대 동작이며 전부 Human 검증됐다는 의미가 아닙니다. 제출 시 수용 근거는 [테스트 실행 기록](../08_qa_reports/test-plan-and-results.md), 사용자 검증 절차는 [시나리오 A~D](../08_qa_reports/test-scenarios.md), 미해소 항목의 다음 조치는 [향후 개선](../09_roadmap/future-roadmap.md)에 둡니다.
+
+## 9. 고정 근거
+
+- [AI Contract](https://github.com/gyuniverse-hq/bid-change-validator/blob/36f1afba8e1a025006b0bfa1876502e6232b3d28/apps/api/app/ai/contracts.py), [Rule](https://github.com/gyuniverse-hq/bid-change-validator/blob/36f1afba8e1a025006b0bfa1876502e6232b3d28/apps/api/app/qualification/rules/judgment.py)
+- [Ask-back](https://github.com/gyuniverse-hq/bid-change-validator/blob/36f1afba8e1a025006b0bfa1876502e6232b3d28/apps/api/app/qualification/ask_back.py), [Revalidation](https://github.com/gyuniverse-hq/bid-change-validator/blob/36f1afba8e1a025006b0bfa1876502e6232b3d28/apps/api/app/qualification/revalidation.py)
+- [PR #135](https://github.com/gyuniverse-hq/bid-change-validator/pull/135), [PR #137](https://github.com/gyuniverse-hq/bid-change-validator/pull/137)
+- [Notion PRD Gap Map](https://www.notion.so/3d7e94b44d07810aa113ca36d6f4cc34): 2026-09-10 Reconciliation. 과거 FR/NFR ID 출처이며, 당시 Copilot Proposed·위험조항 Future 표시는 이후 Code/Test로 재판정했습니다.
