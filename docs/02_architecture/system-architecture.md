@@ -56,7 +56,7 @@ flowchart TB
 | Parsing | pypdf, olefile, ZIP/XML, Python stdlib | 원문 bytes → text/blocks/locator/hash |
 | Extraction | OpenAI SDK Structured Outputs | 청크에서 구조화 요건 추출; 최종 판정은 하지 않음 |
 | Grounding / Rule | Python 결정론적 로직 | 원문·위치·값 검증, Canonical 8유형, 3상태 Judgment |
-| Document RAG | OpenAI Embedding, FAISS, BM25+Dense/RRF, LangChain Core prompt/runnable | 현재 공고 Version의 공개 문서 검색·인용 답변 |
+| Document RAG | OpenAI Embedding, FAISS, BM25+Dense/RRF, LangChain Core ChatPromptTemplate | 현재 공고 Version의 공개 문서 검색·인용 답변 |
 | DB | PostgreSQL 16, Alembic | 관계형 상태와 JSONB snapshot; migration head `022_notice_history_backfill` |
 | Runtime | Docker / Docker Compose, Node.js >=22.13, pnpm | API·DB·migration·collector 실행, Frontend 별도 실행 |
 

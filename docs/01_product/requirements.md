@@ -47,7 +47,7 @@
 
 - `/evaluation`: 제안서 업로드·원문·관련 위치 후보·사용자 확인은 구현됐으나 평가기준 전용 추출과 점수 산정은 지원하지 않음
 - 계약 위험조항: AI Core 분류, 저장 API와 자동 테스트는 존재하나 전용 사용자 화면·전체 E2E 연결은 확인 필요
-- 변경공고: Diff와 Revalidation 코드는 구현됐으나 실제 G2 Ground Truth Human Validation은 진행 중
+- 변경공고: Diff와 Revalidation 코드는 구현됐으나 실제 G2 Ground Truth Human Validation은 대기
 - Requirement Extraction / Evidence: 실제 공고 G1 정답 라벨과 최종 품질 수치 미확정
 - AI Copilot: API·도구·확인형 Action은 구현됐으나 사용자 Task 평가는 대기
 - 주요 화면의 전체 Human Click E2E와 외부 Deployment Smoke는 대기
@@ -66,9 +66,9 @@
 | --- | --- | --- | --- | --- |
 | CUR-NFR-01 | 최종 참가자격 판정은 재현 가능한 Rule이 담당한다. | 동일한 Canonical Requirement, Company `profile_snapshot`, 기준일, Rule Version 입력은 동일한 Judgment를 만든다. | Current | `qualification/rules/judgment.py`, `test_qualification_judgment.py` |
 | CUR-NFR-02 | 판정과 원문 근거를 추적할 수 있어야 한다. | `requirement_key → evidence_key → document_id → location` 연결이 저장·응답에서 유지된다. | Current | `analysis_models.py`, `ai/contracts.py`, `/evidence` |
-| CUR-NFR-03 | 공고·분석·판정·재검증 이력을 덮어쓰지 않는다. | Notice Version과 Analysis / Judgment / Revalidation Run ID로 기준·현재 결과를 구분할 수 있다. | Current | `models.py`, `analysis_models.py`, `judgment_models.py`, `revalidation_models.py` |
+| CUR-NFR-03 | 공고 Version과 분석·판정·재검증 Run의 이력을 구분해 보존한다. | Notice Version과 Analysis / Judgment / Revalidation Run ID로 기준·현재 결과를 구분할 수 있다. | Current | `models.py`, `analysis_models.py`, `judgment_models.py`, `revalidation_models.py` |
 | CUR-NFR-04 | 불명확한 조건을 확정 판정이나 무분별한 질문으로 바꾸지 않는다. | 복합·예외·근거 부족 조건은 `UNKNOWN` 또는 직접 확인으로 남고 Askability Guard를 통과한 단일 사실만 질문한다. | Current | `rules/askability.py`, `rules/clause_safety.py`, `test_askability.py` |
-| CUR-NFR-05 | 오래되거나 변경된 문맥으로 쓰기 작업을 수행하지 않는다. | Analysis, Judgment, Company Snapshot, Rule Version 또는 기준일이 달라지면 Ask-back/Revalidation을 거부하거나 전체 재판정을 요구한다. | Current | `qualification/ask_back.py`, `qualification/revalidation.py`, Copilot Action Test |
+| CUR-NFR-05 | 오래되거나 변경된 문맥으로 쓰기 작업을 수행하지 않는다. | Ask-back은 최신 Analysis/Judgment·회사 Snapshot·Rule을 확인하고, Revalidation은 source/baseline/current와 Snapshot·Rule·기준일 호환성을 검사한다. 각 guard 실패 시 거부하거나 전체 재판정을 요구한다. | Current | `qualification/ask_back.py`, `qualification/revalidation.py`, Copilot Action Test |
 | CUR-NFR-06 | 사용자·회사·Case 접근 경계를 확인한다. | 보호 API의 인증·소유권 거부 경로를 구현한다. `AUTH_REQUIRED=false` 개발 기본값과 운영 인증 설정을 구분한다. 운영 안전성 승인은 배포 Smoke 후 가능하다. | Current / 운영 Validation Pending | `auth.py`, `main.py`, `config.py`, `test_auth.py`, `test_copilot_flow.py` |
 
 ## 5. 기능 요구사항
