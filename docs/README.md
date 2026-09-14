@@ -17,9 +17,9 @@
 
 | 영역 | 문서 | 목적 | 현재 상태 |
 | --- | --- | --- | --- |
-| Product | [requirements](01_product/requirements.md) | 최종 요구사항 | Draft |
+| Product | [requirements](01_product/requirements.md) | 최종 요구사항 | Current |
 | Architecture | [system architecture](02_architecture/system-architecture.md) | 전체 시스템 구조 | Draft |
-| Architecture | [traceability](02_architecture/feature-traceability.md) | 요구사항 ↔ 구현 ↔ Test | Draft |
+| Architecture | [traceability](02_architecture/feature-traceability.md) | 요구사항 ↔ 구현 ↔ Test | Current |
 | Architecture | [functional flow](02_architecture/functional-flow.md) | 사용자 기능 흐름 | Draft |
 | AI | [LLM/RAG pipeline](03_ai/llm-rag-pipeline.md) | AI / Rule / RAG 책임 경계 | Draft |
 | Data | [ERD](04_contracts/db-erd-current.md) | 실제 데이터 Lineage | Draft |
