@@ -1,9 +1,12 @@
-# 나라장터 변경공고 대응형 입찰 제출 검증기
+<div align="center">
 
-> **회사 정보를 기준으로 나라장터 공고의 참가자격을 원문 근거와 함께 판정하고, 공고가 바뀌면 영향받은 요건만 다시 검증합니다.**
-> 공고문과 PDF·HWP 첨부에서 자격요건을 구조화하고, 판정 근거를 공고 원문 위치까지 연결하는 공공입찰 검증 서비스입니다.
+# 🔍 나라장터 변경공고 대응형 입찰 제출 검증기
 
-**SK Networks Family AI Camp 34기 · 3차 프로젝트 · 4팀**
+**회사 정보를 기준으로 공고 참가자격을 원문 근거와 함께 판정하고,<br/>공고가 바뀌면 영향받은 요건만 다시 검증합니다.**
+
+`SK Networks Family AI Camp 34기` &nbsp;·&nbsp; `3차 프로젝트` &nbsp;·&nbsp; `4팀`
+
+<br/>
 
 ![React](https://img.shields.io/badge/React_19-61DAFB?logo=react&logoColor=black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
@@ -12,6 +15,8 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL_16-4169E1?logo=postgresql&logoColor=white)
 ![OpenAI](https://img.shields.io/badge/OpenAI-412991?logo=openai&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+
+</div>
 
 > **README v0.4 · 구현 기준: `gyuniverse-hq/bid-change-validator` `develop` (`c26cdca`, 2026-09-14)**
 > 코드 구현, 회귀 검증, 실데이터 검수 완료 여부를 구분하여 표시합니다.
@@ -432,12 +437,19 @@ v1 ↔ v2 비교
 
 ```mermaid
 flowchart LR
-    A["① 공고·버전·원문 문서"] --> C["③ 참가자격 검토 Case"]
-    B["② 회사 프로필"] --> C
-    C --> D["④ 자격요건 분석·판정"]
-    D --> E["⑤ 재검증 · Ask-back"]
+    A["① 공고 · 버전 · 원문 문서<br/>8개"] --> C["③ 참가자격 검토 Case<br/>2개"]
+    B["② 회사 프로필<br/>9개"] --> C
+    C --> D["④ 자격요건 분석 · 판정<br/>5개"]
+    D --> E["⑤ 재검증 · Ask-back<br/>2개"]
     A -. "공고 변경 발생 시" .-> E
-    A --> F["⑥ 계약조항 검토"]
+    A --> F["⑥ 계약조항 검토<br/>2개"]
+
+    classDef src fill:#e8f0fe,stroke:#4285f4,stroke-width:2px,color:#174ea6
+    classDef core fill:#fff4d6,stroke:#e0a800,stroke-width:2px,color:#5c4500
+    classDef out fill:#e3f5e8,stroke:#34a853,stroke-width:2px,color:#14532d
+    class A,B src
+    class C,D core
+    class E,F out
 ```
 
 | 도메인 | 테이블 | 수 |
@@ -491,29 +503,52 @@ erDiagram
 
 ```mermaid
 flowchart LR
-    A[나라장터 Open API] --> B[공고·첨부 수집]
-    B --> C[(PostgreSQL / Document Storage)]
-    C --> D[Document Parsing]
-    D --> E[Semantic Chunk Selection]
-    E --> F[LLM Requirement Extraction]
-    F --> G[Deterministic Grounding / Validation]
-    G --> H[Canonical Requirement + Evidence]
-    P[Company Profile] --> I[Deterministic Rule Engine]
+    subgraph collect["① 수집"]
+        A[나라장터 Open API] --> B[공고 · 첨부 수집]
+        B --> C[(PostgreSQL<br/>Document Storage)]
+    end
+
+    subgraph extract["② 자격요건 추출"]
+        D[Document Parsing] --> E[Semantic<br/>Chunk Selection]
+        E --> F["LLM Requirement<br/>Extraction"]
+        F --> G["원문 대조 검증<br/>Grounding"]
+        G --> H[Canonical Requirement<br/>+ Evidence]
+    end
+
+    subgraph judge["③ 판정"]
+        P[Company Profile] --> I[Rule Engine]
+        I --> J[Judgment]
+        J --> K{답변으로<br/>풀리는 UNKNOWN?}
+        K -->|Yes| L[Ask-back] --> I
+    end
+
+    subgraph change["④ 변경 재검증"]
+        M[변경공고] --> N[Version · Requirement<br/>Diff] --> O[영향받은<br/>Requirement]
+    end
+
+    subgraph rag["⑤ Document RAG"]
+        R[Version-scoped<br/>Index] --> S["Copilot QA<br/>Citation"]
+    end
+
+    C --> D
     H --> I
-    I --> J[Judgment]
-    J --> K{UNKNOWN & Askable?}
-    K -->|Yes| L[Ask-back]
-    L --> I
-
-    M[변경공고] --> N[Version / Requirement Diff]
-    N --> O[Affected Requirement]
     O --> I
+    D --> R
 
-    D --> R[Version-scoped Document RAG]
-    R --> S[Copilot Document QA / Citation]
+    classDef llm fill:#fff3cd,stroke:#d39e00,stroke-width:2px,color:#5c4500
+    classDef rule fill:#d9f2e3,stroke:#2e9e5b,stroke-width:2px,color:#14532d
+    classDef store fill:#eceff6,stroke:#8792b5,stroke-width:1.5px,color:#2b3350
+    classDef plain fill:#ffffff,stroke:#c4cada,stroke-width:1.5px,color:#2b3350
+    classDef zone fill:#fafbfd,stroke:#dfe3ec,stroke-width:1px,color:#6b7391
+
+    class F,S llm
+    class G,I,J,N,O rule
+    class C,H,R store
+    class A,B,D,E,P,K,L,M plain
+    class collect,extract,judge,change,rag zone
 ```
 
-자격요건 추출과 Document RAG는 서로 다른 경로입니다. 자격요건은 선택된 원문 청크를 LLM으로 구조화한 뒤 코드로 원문 일치 여부를 검증합니다. FAISS 기반 Document RAG는 현재 공고 버전의 원문을 검색하여 Copilot 답변과 Citation을 지원하며 최종 자격판정을 수행하지 않습니다.
+🟡 LLM이 하는 일 &nbsp;·&nbsp; 🟢 코드가 결정론적으로 하는 일
 
 ### 7.2 AI·Rule 설계
 
