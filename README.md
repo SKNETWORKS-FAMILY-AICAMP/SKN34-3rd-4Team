@@ -26,16 +26,18 @@
 
 </div>
 
-> **README v0.5 · 구현 기준: `gyuniverse-hq/bid-change-validator` `develop` (`c26cdca`, 2026-09-14)**
-> 코드 구현, 회귀 검증, 실데이터 검수 완료 여부를 구분하여 표시합니다.
+구현 기준 — [`gyuniverse-hq/bid-change-validator@develop`](https://github.com/gyuniverse-hq/bid-change-validator/tree/develop) (`c26cdca`, 2026-09-14)
+
+> 코드 구현 / 회귀 검증 / 실데이터 검수
+> 완료 여부를 구분하여 표시합니다.
 
 <details>
 <summary><b>목차</b></summary>
 
 <br>
 
+- [프로젝트 한눈에 보기](#프로젝트-한눈에-보기)
 - [핵심 결과](#-핵심-결과)
-- [시연 영상](#-시연-영상)
 - [1. 팀 소개](#-1-팀-소개)
 - [2. 프로젝트 개요](#-2-프로젝트-개요)
 - [3. 기술 스택](#️-3-기술-스택)
@@ -60,8 +62,6 @@
 | 질문 | 답변 |
 | --- | --- |
 | 어떤 문제를 해결하나요? | 변경공고 이후 기존 입찰 준비가 여전히 유효한지 다시 확인합니다. |
-| 무엇을 비교하나요? | 이전·최신 공고 버전, 참가자격 Requirement, 회사 프로필을 비교합니다. |
-| 무엇을 다시 검증하나요? | 변경의 영향을 받은 Requirement만 추적하여 재판정합니다. |
 | AI는 어디에 사용하나요? | 문서에서 Requirement를 구조화하고, 근거 탐색과 사용자 질의를 지원합니다. |
 | 최종 판정은 어떻게 하나요? | 구조화된 Requirement와 회사 정보를 결정론적 Rule로 비교합니다. |
 | 현재 검증 수준은 무엇인가요? | 합성 회귀는 운영 중이며, 실제 변경공고 Ground Truth와 사용자 E2E는 검증 중입니다. |
@@ -86,35 +86,19 @@
 
 ---
 
-## 🎥 시연 영상
-
-> 🚧 **팀 결정 대기** — 촬영 여부. 찍기로 하면 YouTube 링크, 안 찍으면 이 섹션 삭제
-
----
-
 ## 👥 1. 팀 소개
 
 **팀명** SKN34 3차 4팀
 
-| 팀원 | 주요 담당 | GitHub |
-| --- | --- | --- |
-| 김재현 | LLM / RAG · Requirement Extraction · Evaluation | [@kim-4480](https://github.com/kim-4480) |
-| 이홍규 | LLM / RAG · AI Copilot · 협업 인프라 | [@4hglee-ops](https://github.com/4hglee-ops) |
-| 전진환 | Backend · API · 전체 시스템 구성 | [@dfs32dfs](https://github.com/dfs32dfs) |
-| 정예린 | DB · Data Collection / Management | [@yerin816](https://github.com/yerin816) |
-| 황수빈 | 기획 · Frontend · UI/UX | [@subinss838](https://github.com/subinss838) |
+| 팀원 | 김재현 | 이홍규 | 전진환 | 정예린 | 황수빈 |
+| --- | --- | --- | --- | --- | --- |
+| 사진 | <img width="140" height="140" style="object-fit:cover;border-radius:12px;background:#f6f7f9;" alt="재현" src="https://soopool.art/img/infoacpc/loadingscreen_png/%EC%A0%9C%EC%B2%9C" /> | <img width="140" height="140" style="object-fit:cover;border-radius:12px;background:#f6f7f9;" alt="홍규" src="https://soopool.art/img/infoacpc/loadingscreen_png/%EB%A6%AC%EC%B2%98%EB%93%9C" /> | <img width="140" height="140" style="object-fit:cover;border-radius:12px;background:#f6f7f9;" alt="진환" src="https://soopool.art/img/infoacpc/loadingscreen_png/%EC%9E%AD%EC%8A%A8" /> | <img width="140" height="140" style="object-fit:cover;border-radius:12px;background:#f6f7f9;" alt="예린" src="https://soopool.art/img/infoacpc/loadingscreen_png/%EB%A6%B4%EB%A6%AC%EC%95%88" /> | <img width="140" height="140" style="object-fit:cover;border-radius:12px;background:#f6f7f9;" alt="수빈" src="https://soopool.art/img/infoacpc/loadingscreen_png/%EC%82%AC%EB%9D%BC" /> |
+| GitHub | [@kim-4480](https://github.com/kim-4480) | [@4hglee-ops](https://github.com/4hglee-ops) | [@dfs32dfs](https://github.com/dfs32dfs) | [@yerin816](https://github.com/yerin816) | [@subinss838](https://github.com/subinss838) |
+| 주요 담당 | LLM / RAG · Requirement Extraction · Evaluation | LLM / RAG · AI Copilot · 협업 인프라 | Backend · API · 전체 시스템 구성 | DB · Data Collection / Management | 기획 · Frontend · UI/UX |
 
-프로젝트는 각 파트가 독립적으로 결과물을 만드는 방식보다 다음 연결을 중요하게 두었습니다.
+각 파트가 독립적으로 결과물을 만드는 방식보다 파트 사이의 연결을 중요하게 두었습니다.
 
-```text
-Frontend
-   ↕
-Backend
-   ↕
-DB / Data
-   ↕
-LLM / RAG
-```
+`Frontend ↔ Backend ↔ DB/Data ↔ LLM/RAG`
 
 각 파트의 출력이 실제 사용자 흐름에서 연결되는지를 기준으로 통합했습니다.
 
@@ -122,18 +106,13 @@ LLM / RAG
 
 실제 개발은 다음 GitHub 중심 흐름으로 진행했습니다.
 
-```text
-GitHub Issue
-    ↓
-Feature / Fix Branch
-    ↓
-Pull Request
-    ↓
-Review / Test
-    ↓
-Merge
-    ↓
-통합 상태 확인
+```mermaid
+flowchart LR
+    A["GitHub Issue"] --> B["Feature / Fix<br/>Branch"]
+    B --> C["Pull Request"]
+    C --> D["Review / Test"]
+    D --> E["Merge"]
+    E --> F["통합 상태 확인"]
 ```
 
 - 기능 또는 수정 단위로 Branch와 Pull Request를 만들었습니다.
@@ -156,30 +135,22 @@ Merge
 
 ### 전체 흐름
 
-```text
-실제 나라장터 공고 조회
-        ↓
-공고문·첨부문서 수집
-        ↓
-공고 버전 및 원문 관리
-        ↓
-참가자격 Requirement 추출
-        ↓
-회사 프로필과 요건 비교
-        ↓
-참가자격 판정
-        ↓
-근거 원문 확인
-        ↓
-정보 부족 시 Ask-back
-        ↓
-변경공고 발생
-        ↓
-이전 버전 ↔ 최신 버전 비교
-        ↓
-영향받은 Requirement 식별
-        ↓
-영향 요건만 재검증
+한 번 판정하고 끝나는 직선이 아닙니다. **정보가 부족하면 Ask-back으로, 공고가 바뀌면 재검증으로 판정 단계에 다시 돌아옵니다.**
+
+```mermaid
+flowchart TD
+    A["실제 나라장터 공고 조회"] --> B["공고문·첨부문서 수집"]
+    B --> C["공고 버전 및 원문 관리"]
+    C --> D["참가자격 Requirement 추출"]
+    D --> E["회사 프로필과 요건 비교"]
+    E --> F["참가자격 판정"]
+    F --> G["근거 원문 확인"]
+    G -- "정보 부족" --> H["Ask-back"]
+    H --> F
+    F -. "변경공고 발생" .-> I["이전 버전 ↔ 최신 버전 비교"]
+    I --> J["영향받은 Requirement 식별"]
+    J --> K["영향 요건만 재검증"]
+    K --> F
 ```
 
 ### 💡 배경 — 담당자가 실제로 확인하는 것
@@ -197,13 +168,7 @@ Merge
 * 공고 첨부문서
 * 변경·정정·취소 공고 이력
 
-이 조건들은 공고문 본문과 여러 개의 첨부문서에 흩어져 있습니다. 담당자가 이미
-
-```text
-참가 가능 판정 → 제출서류 준비 → 내부 검토
-```
-
-까지 마친 뒤에 변경공고가 올라오면, 어느 조건이 달라졌는지 확인하기 위해 전·후 공고문을 처음부터 다시 대조해야 합니다. **조건이 실제로 바뀐 것인지 문구만 다듬어진 것인지는 읽어보기 전까지 알 수 없습니다.**
+이 조건들은 공고문 본문과 여러 개의 첨부문서에 흩어져 있습니다. 담당자가 이미 **참가 가능 판정 → 제출서류 준비 → 내부 검토**까지 마친 뒤에 변경공고가 올라오면, 어느 조건이 달라졌는지 확인하기 위해 전·후 공고문을 처음부터 다시 대조해야 합니다. **조건이 실제로 바뀐 것인지 문구만 다듬어진 것인지는 읽어보기 전까지 알 수 없습니다.**
 
 ### 🎯 프로젝트 목표
 
@@ -216,84 +181,41 @@ Merge
 
 ### 핵심 기능
 
-| 기능                  | 설명                                                 |
-| ------------------- | -------------------------------------------------- |
-| 나라장터 공고 조회          | 실제 나라장터 공고를 수집하고 검색하여 검토 대상을 선택합니다.                |
-| 공고 버전 관리            | 최초공고·변경공고 등 동일 공고의 버전을 관리합니다.                      |
-| 공고문·첨부문서 수집         | 공고 원문과 PDF/HWP/HWPX 등의 첨부문서를 함께 관리합니다.             |
-| 문서 Parsing          | 공고문과 첨부문서를 분석 가능한 텍스트 구조로 변환합니다.                   |
-| 참가자격 Requirement 추출 | 자연어 공고문에서 판정에 필요한 참가자격 요건과 근거를 구조화합니다.             |
-| 회사 프로필 매칭           | 회사가 보유한 등록·인증·지역·실적 등의 정보를 공고 요건과 비교합니다.           |
-| 결정론적 참가자격 판정        | Requirement와 회사 정보를 규칙으로 비교하여 상태를 판정합니다.           |
-| Ask-back            | 판정에 필요한 회사 정보가 부족한 경우 사용자가 답변 가능한 항목을 추가로 확인합니다.   |
-| 근거 원문 확인            | 판정 결과와 실제 공고 원문 Evidence를 연결하여 사용자가 직접 확인할 수 있습니다. |
-| 변경공고 Diff           | 이전 공고 버전과 최신 버전을 비교하여 변경 내용을 식별합니다.                |
-| 영향 요건 추적            | 변경 내용과 연결된 Requirement를 찾아 재검증 대상으로 지정합니다.         |
-| 변경공고 재검증            | 영향을 받은 Requirement만 다시 판정하여 기존 결과의 유효성을 확인합니다.     |
-| AI Copilot          | 현재 검토 건의 판정·근거·확인 필요 항목·회사 정보·변경 내역 조회를 지원합니다.     |
+**핵심 처리 흐름** — 위 다이어그램의 각 단계가 실제로 하는 일입니다.
 
-### 대표 사용자 시나리오
+| 기능 | 설명 |
+| --- | --- |
+| 나라장터 공고 조회 | 실제 나라장터 공고를 수집하고 검색하여 검토 대상을 선택합니다. |
+| 공고 버전 관리 | 최초공고·변경공고 등 동일 공고의 버전을 관리합니다. |
+| 공고문·첨부문서 수집 | 공고 원문과 PDF/HWP/HWPX 등의 첨부문서를 함께 관리합니다. |
+| 문서 Parsing | 공고문과 첨부문서를 분석 가능한 텍스트 구조로 변환합니다. |
+| 참가자격 Requirement 추출 | 자연어 공고문에서 판정에 필요한 참가자격 요건과 근거를 구조화합니다. |
+| 회사 프로필 매칭 | 회사가 보유한 등록·인증·지역·실적 등의 정보를 공고 요건과 비교합니다. |
+| 결정론적 참가자격 판정 | Requirement와 회사 정보를 규칙으로 비교하여 상태를 판정합니다. |
+| 근거 원문 확인 | 판정 결과와 실제 공고 원문 Evidence를 연결하여 사용자가 직접 확인할 수 있습니다. |
 
-**최초 공고 검토**
+**지원 기능** — 판정이 막히거나 공고가 바뀔 때 동작합니다.
 
-```text
-사용자가 공고 검색
-        ↓
-검토할 공고 선택
-        ↓
-공고문 및 첨부문서 분석
-        ↓
-참가자격 Requirement 추출
-        ↓
-회사 프로필과 Requirement 비교
-        ↓
-참가자격 판정
-        ↓
-근거 원문 확인
-```
+| 기능 | 설명 |
+| --- | --- |
+| Ask-back | 판정에 필요한 회사 정보가 부족한 경우 사용자가 답변 가능한 항목을 추가로 확인합니다. |
+| 변경공고 Diff | 이전 공고 버전과 최신 버전을 비교하여 변경 내용을 식별합니다. |
+| 영향 요건 추적 | 변경 내용과 연결된 Requirement를 찾아 재검증 대상으로 지정합니다. |
+| 변경공고 재검증 | 영향을 받은 Requirement만 다시 판정하여 기존 결과의 유효성을 확인합니다. |
+| AI Copilot | 현재 검토 건의 판정·근거·확인 필요 항목·회사 정보·변경 내역 조회를 지원합니다. |
 
-**회사 정보가 부족한 경우**
+### 회사 정보가 부족한 경우
 
-공고에서 필요한 조건이 존재하지만 회사 프로필만으로 판단할 수 없는 경우 모든 `UNKNOWN`을 동일하게 처리하지 않습니다.
+공고에서 필요한 조건이 존재하지만 회사 프로필만으로 판단할 수 없는 경우, 모든 `UNKNOWN`을 동일하게 처리하지 않습니다. 사용자가 직접 답변하여 해결할 수 있는 항목만 Ask-back 대상으로 구분합니다.
 
-사용자가 직접 답변하여 해결할 수 있는 항목은 Ask-back 대상으로 구분합니다.
-
-```text
-Requirement 판정
-      ↓
-UNKNOWN
-      ↓
-사용자에게 확인 가능한 정보인가?
-      ↓
-Yes ──→ Ask-back
-             ↓
-        사용자 답변
-             ↓
-        해당 Requirement 재판정
-
-No ──→ 확인 필요 상태 유지
-```
-
-**변경공고 발생**
-
-```text
-기준 공고 v1
-        ↓
-참가자격 판정 완료
-        ↓
-변경공고 v2 발생
-        ↓
-v1 ↔ v2 비교
-        ↓
-변경 내용 식별
-        ↓
-영향 Requirement 추적
-        ↓
-해당 Requirement만 재판정
-        ↓
-변경 전·후 판정 비교
-        ↓
-변경 근거 원문 확인
+```mermaid
+flowchart TD
+    A["Requirement 판정"] --> B["UNKNOWN"]
+    B --> C{"사용자에게<br/>확인 가능한 정보인가?"}
+    C -- "Yes" --> D["Ask-back"]
+    C -- "No" --> E["확인 필요 상태 유지"]
+    D --> F["사용자 답변"]
+    F --> G["해당 Requirement 재판정"]
 ```
 
 ### 🚫 이 서비스가 하지 않는 것
@@ -329,7 +251,25 @@ v1 ↔ v2 비교
 
 ## 📅 4. WBS
 
-기획 → 설계 → 구현 → 검증 → 제출 5단계로 진행했습니다. 담당은 파트 단위로 적었습니다.
+기획 → 설계 → 구현 → 검증 → 제출 5단계로 진행합니다. 담당은 파트 단위로 적었습니다.
+
+```mermaid
+gantt
+    title 5단계 진행 (2026-09)
+    dateFormat YYYY-MM-DD
+    axisFormat %m/%d
+    section 기획
+    주제 확정 · 요구사항 명세 · 팀 규칙 :done, a1, 2026-09-01, 3d
+    section 설계
+    화면설계 · 스키마 v2 · API 명세 · 추출 계약 :done, a2, 2026-09-04, 5d
+    section 구현
+    수집 · 추출 · 판정 엔진 · 화면 7종 · 인증 :done, a3, 2026-09-08, 7d
+    section 검증
+    Golden Fixture · Flow QA · 실공고 E2E :active, a4, 2026-09-11, 6d
+    section 제출
+    최종 수정 · 캡처 · 측정 · README :active, a5, 2026-09-15, 3d
+    발표 :milestone, m1, 2026-09-17, 0d
+```
 
 | 단계 | 기간 | 핵심 산출물 |
 | --- | --- | --- |
@@ -416,6 +356,13 @@ v1 ↔ v2 비교
 
 ### 기능 요구사항 — 영역과 개수
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/requirements-dark.png">
+  <img alt="기능 요구사항 70건 영역별 분포 — 참가자격 검토 12, 평가 대응 12, 변경 이력 11, 공고 찾기 10, 확인 필요 8, 회사 프로필 7, 실패 경로 6, 근거 원문 4" src="docs/assets/requirements-light.png" width="100%">
+</picture>
+
+판정을 믿을 수 있게 만드는 네 영역(참가자격 검토 · 변경 이력 · 확인 필요 · 근거 원문)에 **35건**, 전체의 절반을 뒀습니다.
+
 | 영역 | ID | 건수 | 대표 요구사항 |
 | --- | --- | --- | --- |
 | 회사 프로필 | FR-P | 7 | 업종코드는 검색으로 고른다 · 실적은 **건별로** 저장한다(합계 아님) |
@@ -445,13 +392,6 @@ flowchart LR
     D --> E["⑤ 재검증 · Ask-back<br/>2개"]
     A -. "공고 변경 발생 시" .-> E
     A --> F["⑥ 계약조항 검토<br/>2개"]
-
-    classDef src fill:#e8f0fe,stroke:#4285f4,stroke-width:2px,color:#174ea6
-    classDef core fill:#fff4d6,stroke:#e0a800,stroke-width:2px,color:#5c4500
-    classDef out fill:#e3f5e8,stroke:#34a853,stroke-width:2px,color:#14532d
-    class A,B src
-    class C,D core
-    class E,F out
 ```
 
 | 도메인 | 테이블 | 수 |
@@ -538,11 +478,11 @@ flowchart LR
     O --> I
     D --> R
 
-    classDef llm fill:#fff3cd,stroke:#d39e00,stroke-width:2px,color:#5c4500
-    classDef rule fill:#d9f2e3,stroke:#2e9e5b,stroke-width:2px,color:#14532d
-    classDef store fill:#eceff6,stroke:#8792b5,stroke-width:1.5px,color:#2b3350
-    classDef plain fill:#ffffff,stroke:#c4cada,stroke-width:1.5px,color:#2b3350
-    classDef zone fill:#fafbfd,stroke:#dfe3ec,stroke-width:1px,color:#6b7391
+    classDef llm fill:none,stroke:#eda100,stroke-width:3px
+    classDef rule fill:none,stroke:#1baf7a,stroke-width:3px
+    classDef store fill:none,stroke:#8792b5,stroke-width:2px
+    classDef plain fill:none,stroke:#b9bccb,stroke-width:1.5px
+    classDef zone fill:none,stroke:#b9bccb,stroke-width:1px
 
     class F,S llm
     class G,I,J,N,O rule
@@ -551,7 +491,7 @@ flowchart LR
     class collect,extract,judge,change,rag zone
 ```
 
-🟡 LLM이 하는 일 &nbsp;·&nbsp; 🟢 코드가 결정론적으로 하는 일
+🟡 노란 테두리 — LLM이 하는 일 &nbsp;·&nbsp; 🟢 초록 테두리 — 코드가 결정론적으로 하는 일
 
 ### 7.2 AI·Rule 설계
 
@@ -575,11 +515,7 @@ flowchart LR
 | `UNSATISFIED` | 현재 회사 정보로 요건 미충족을 확인 |
 | `UNKNOWN` | 현재 정보만으로 확정할 수 없음 |
 
-`UNKNOWN`이 곧 사용자 질문 대상이라는 뜻은 아닙니다. 단일 사용자 사실로 안전하게 해소할 수 있는 요건만 `ASKABLE`로 분류합니다.
-
-```text
-UNKNOWN ≠ ASKABLE
-```
+**`UNKNOWN` ≠ `ASKABLE`** — `UNKNOWN`이 곧 사용자 질문 대상이라는 뜻은 아닙니다. 단일 사용자 사실로 안전하게 해소할 수 있는 요건만 `ASKABLE`로 분류합니다.
 
 판정에는 Requirement, 회사 정보 또는 사용자 답변, 원문 Evidence와 버전 정보를 함께 남깁니다. 생성된 설명 자체가 아니라 공고 원문의 문서·페이지·문단 위치를 근거로 사용합니다.
 
@@ -587,18 +523,13 @@ UNKNOWN ≠ ASKABLE
 
 ### 7.3 변경공고 재검증
 
-```text
-기준 공고 분석·판정
-        ↓
-변경공고 수집·버전 생성
-        ↓
-Canonical Requirement Diff
-        ↓
-ADDED / MODIFIED / REMOVED 식별
-        ↓
-영향받은 현재 Requirement만 재판정
-        ↓
-변경 전·후 결과와 Evidence 비교
+```mermaid
+flowchart LR
+    A["기준 공고<br/>분석·판정"] --> B["변경공고<br/>수집·버전 생성"]
+    B --> C["Canonical<br/>Requirement Diff"]
+    C --> D["ADDED / MODIFIED<br/>/ REMOVED 식별"]
+    D --> E["영향받은 현재<br/>Requirement만 재판정"]
+    E --> F["변경 전·후 결과와<br/>Evidence 비교"]
 ```
 
 코드 경로와 합성 회귀 테스트는 구현되어 있습니다. 변경되지 않은 요건은 기존 판정을 승계하고, 추가·수정된 요건만 현재 회사 프로필로 다시 판정합니다. 기준 판정 이후 회사 프로필이나 판정 기준일이 바뀌었다면 부분 재검증을 중단하고 전체 재판정을 요구합니다.
@@ -616,13 +547,13 @@ ADDED / MODIFIED / REMOVED 식별
 
 AI Copilot은 현재 검토 건을 중심으로 판정·근거·확인 필요 항목·회사 프로필·변경 내역을 조회하는 작업형 인터페이스입니다.
 
-```text
-"이 공고 참가할 수 있어?"
-"왜 미달이야?"
-"두 번째 조건 근거 보여줘."
-"변경공고에서 뭐가 바뀌었어?"
-"전체 변경 요건을 다시 검증해줘."
-```
+| 사용자가 묻는 것 | Copilot이 하는 일 |
+| --- | --- |
+| "이 공고 참가할 수 있어?" | 현재 검토 건의 판정 결과를 요약 |
+| "왜 미달이야?" | 해당 요건의 판정 사유와 비교값을 제시 |
+| "두 번째 조건 근거 보여줘." | 직전 회신의 참조를 해석해 원문 Evidence 연결 |
+| "변경공고에서 뭐가 바뀌었어?" | 차수 간 Requirement Diff 조회 |
+| "전체 변경 요건을 다시 검증해줘." | 재검증을 **제안**하고 사용자 확인 후 실행 |
 
 - 제한된 회신 컨텍스트로 "그 조건", "두 번째" 같은 참조를 해석합니다.
 - 실제 Requirement, 판정, Evidence, 공고 Version, Company Profile은 Backend에서 다시 조회합니다.
@@ -637,6 +568,22 @@ AI Copilot은 현재 검토 건을 중심으로 판정·근거·확인 필요 �
 ---
 
 ## 📁 프로젝트 구조
+
+```
+bid-change-validator/
+├── apps/api/     # FastAPI — 수집 · 추출 · 판정 · Copilot · 문서 RAG
+├── apps/web/     # vinext(Vite + RSC) — 제품 화면 7종
+├── services/     # 문서 파싱
+├── db/ data/     # 시드 · 마스터 코드
+├── contracts/    # 파트 간 계약
+├── docs/         # 01_product ~ 09_roadmap
+└── samples/golden/
+```
+
+<details>
+<summary><b>전체 트리 펼치기</b></summary>
+
+<br>
 
 ```
 bid-change-validator/
@@ -671,6 +618,8 @@ bid-change-validator/
 └── docker-compose.yml
 ```
 
+</details>
+
 ---
 
 ## ⚙️ 실행 방법
@@ -689,22 +638,22 @@ bid-change-validator/
 
 저장소 루트의 `.env.example`을 `.env`로 복사한 뒤 환경변수를 설정합니다.
 
-```powershell
-Copy-Item .env.example .env
+```bash
+cp .env.example .env          # PowerShell: Copy-Item .env.example .env
 docker compose up -d --build api
 ```
 
 API 시작 전에 Alembic migration이 자동 적용됩니다. 변경공고 수집기를 함께 실행하려면 다음 명령을 사용합니다.
 
-```powershell
+```bash
 docker compose --profile collector up -d --build api notice-poller
 ```
 
 ### Frontend
 
-```powershell
+```bash
 cd apps/web
-Copy-Item .env.example .env.local
+cp .env.example .env.local    # PowerShell: Copy-Item .env.example .env.local
 pnpm install
 pnpm dev
 ```
@@ -722,7 +671,7 @@ OpenAI API Key가 없으면 자격요건 분석과 Document RAG처럼 외부 모
 
 정적 파일만 서빙하면 화면 이동이 동작하지 않습니다 — RSC 응답을 서버가 만들어야 합니다.
 
-```powershell
+```bash
 pnpm build
 pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 ```
@@ -748,22 +697,48 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 | 참가자격 검토 | `/qualification` | Analysis → Judgment와 요건·근거 확인 |
 | 확인 필요 | `/ask-back` | `ASKABLE UNKNOWN` 답변과 부분 재판정 |
 | 근거 원문 | `/evidence` | Requirement·판정·원문 Evidence 연결 |
-| 평가 대응 | `/evaluation` | 참가자격 기반 참고 정보 제공; 평가 전용 추출·점수 예측 미지원 |
+| 평가 대응 | `/evaluation` | 참가자격 기반 참고 정보 제공 · 평가 전용 추출과 점수 예측은 미지원 |
 | 변경 이력 | `/changes` | 버전·Requirement Diff와 재검증 결과 |
 | 회사 프로필 | `/company` | 회사 정보·업종·실적·인증/등록 관리 |
 
-7개 Route의 이동과 주요 API 연결은 구현되어 있습니다. 실제 G2와 안전한 Ask-back 답변을 포함한 전체 Human Click E2E는 최종 검증 대기 상태입니다.
+제품 화면 7종의 이동과 주요 API 연결은 구현되어 있습니다. 실제 G2와 안전한 Ask-back 답변을 포함한 전체 Human Click E2E는 최종 검증 대기 상태입니다.
 
-> 🚧 **화면 캡처 5장 작성 예정** — 사용 흐름 순서대로
->
-> 공고 찾기 → 참가자격 검토 → 확인 필요 → 근거 원문 → 변경 이력
+아래 캡처 5장은 8.2 시연 시나리오와 같은 순서입니다.
+
+**S1 · 공고 찾기** — 회사 프로필로 걸러진 공고 목록에서 대상 공고를 엽니다.
+
+![공고 찾기 화면 — 회사 프로필로 걸러진 공고 목록](docs/assets/s1-notices.png)
+
+**S2 · 참가자격 검토 (기준 v1)** — 1차 공고 기준 판정입니다. 화면 위 `기준 v1 / 현재 v2` 버튼으로 차수를 바꿉니다.
+
+![참가자격 검토 화면 — 1차 공고 기준 판정과 차수 전환 버튼](docs/assets/s2-qualification-v1.png)
+
+**S3 · 근거 원문** — 판정 옆 「근거 보기」를 누르면 그 판정이 나온 공고 원문 문장이 그대로 열립니다.
+
+![근거 원문 화면 — 판정 옆에 공고 원문 인용](docs/assets/s3-evidence.png)
+
+**S4 · 참가자격 검토 (현재 v2)** — 2차 공고 기준으로 바꾼 결과입니다. 1차에서 보류했던 항목이 충족으로 확정됩니다.
+
+![참가자격 검토 화면 — 2차 공고 기준 판정](docs/assets/s4-qualification-v2.png)
+
+**S5 · 변경 이력** — 1차와 2차 원문을 좌우로 대조합니다. 등록코드 요구가 1224에서 1227로 바뀐 지점입니다.
+
+![변경 이력 화면 — 1차와 2차 원문 좌우 대조](docs/assets/s5-changes.png)
 
 ### 8.2 시연 시나리오
 
-데모 케이스는 Golden Fixture **J14 · `R26BK01684863`** 전북대학교 남원글로컬캠퍼스 본관동 생활폐기물 처리 용역입니다.
+데모 케이스는 Golden Fixture **J13 · `R26BK01684863`** 전북대학교 남원글로컬캠퍼스 본관동 생활폐기물 처리 용역입니다.
 1차 → 2차에서 폐기물 운반업 등록코드가 **1224 → 1227**로 바뀐 사례입니다.
 
-> 🚧 **흐름 요약 작성 예정**
+| # | 화면 | 보는 것 |
+| --- | --- | --- |
+| S1 | 공고 찾기 `/notices` | 회사 프로필로 걸러진 목록에서 대상 공고를 엽니다 |
+| S2 | 참가자격 검토 `/qualification` · 기준 v1 | 1차 공고는 1224 등록업체를 요구하고 이 회사는 1224가 없습니다. 다만 같은 조항에 「장비를 갖춘 경우 등록을 별도로 요구하지 않을 수 있다」는 예외가 붙어 있어 공고문만으로 가를 수 없습니다. 그래서 미달로 확정하지 않고 **확인 필요**로 남깁니다 |
+| S3 | 근거 원문 | 판정 옆 「근거 보기」를 누르면 그 판정이 나온 공고 원문 문장이 그대로 열립니다 |
+| S4 | 참가자격 검토 · 현재 v2 | 화면 위 `기준 v1 / 현재 v2` 버튼으로 차수를 바꿉니다. 2차가 요구하는 **1227**을 이 회사가 보유하고 있어, 1차에서 보류했던 항목이 2차 기준으로는 **충족으로 확정**됩니다 |
+| S5 | 변경 이력 `/changes` | 1차 원문과 2차 원문을 좌우로 대조합니다. 텍스트를 통째로 비교하지 않고 원문에서 구조화한 요건을 비교하기 때문에, 문구만 바뀐 변경과 요건이 바뀐 변경이 갈립니다 |
+
+> 1차 판정은 미달이 아니라 **보류**였습니다. 「참가 불가였는데 가능해졌다」가 아니라 「1차에서는 판단을 보류했고, 2차 공고 기준으로는 충족으로 확정됐다」가 정확한 표현입니다.
 
 ### 8.3 데이터 및 Evaluation
 
@@ -783,6 +758,20 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 | --- | ---: | ---: | ---: | ---: | --- |
 | E0 초기 기준선 | 104/138 (75.4%) | 34/138 (24.6%) | 0건 | 36/40 (90.0%) | 안전성 보완 전 고정 기준선 |
 | 2026-09-13 회귀 | 110/138 (79.7%) | 28/138 (20.3%) | 0건 | 37/40 (92.5%) | 보류 6건을 확정으로 옮기면서 오판 0건 유지 |
+| 2026-09-15 재확인 | 110/138 (79.7%) | 28/138 (20.3%) | 0건 | 37/40 (92.5%) | 업종 마스터 수정 후 재측정 · Golden gate 통과 |
+
+**최신 측정 근거**
+
+| 항목 | 값 |
+| --- | --- |
+| 측정 일자 | 2026-09-15 18:42 KST |
+| 기준 커밋 | `ee8dd7a3888d350fe597e177f89c4935f5d1f00f` |
+| Fixture SHA-256 | `552eb031612e5004efc67adbaeb0f015fad73de714e807014c4cf61d391efe9c` |
+| 게이트 | Golden gate 통과 |
+
+> 이 회귀는 DB의 업종 마스터를 조회하지 않고 frozen canonical requirement를 판정기에 직접 입력합니다.
+> 그래서 9/15에 고친 업종 마스터 명칭 14건은 위 숫자를 움직이지 않습니다. 마스터 수정의 실제 효과는
+> 마스터를 조회하는 제품 추출 경로에서 live recall을 따로 재야 확인됩니다.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/regression-dark.png">
@@ -820,7 +809,8 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 - [실공고 Snapshot Dataset](https://github.com/gyuniverse-hq/bid-change-validator/tree/develop/samples/golden/qualification-real-v0.1)
 - [Document RAG Evaluation](https://github.com/gyuniverse-hq/bid-change-validator/blob/develop/docs/08_qa_reports/ai-copilot-v2/e3-rag-evaluation.md)
 
-> 🚧 **최종 측정값 확정 후 갱신** — Backend 테스트 통과 수 · 최신 Golden 회귀 결과 · 기준 커밋 SHA · 측정 일자
+> 🚧 **Backend 전체 테스트 통과 수 확정 대기** — 로컬은 격리 PostgreSQL을 준비하지 못해 재실행하지 않았습니다.
+> PR CI 결과로 구분해 기록할 예정입니다.
 
 ### 8.4 프로젝트 결과
 
@@ -830,11 +820,9 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 - Golden Fixture 회귀에서 잘못된 확정 판정 0건을 유지하면서 기대값 일치를 104/138에서 110/138로 개선했습니다.
 - 판정·근거·확인 필요 항목·변경 내역을 현재 검토 건 중심으로 조회하는 AI Copilot을 연결했습니다.
 
-실공고 Ground Truth, 사용자 Task 평가, 전체 Human Click E2E는 아직 진행 중이며 완료된 성과와 구분합니다.
-
 ---
 
-## 🚫 검토했지만 쓰지 않은 것
+## 🧭 검토했지만 쓰지 않은 것
 
 검토한 뒤 의도적으로 채택하지 않은 선택입니다. 안 한 이유를 남겨 두면 판정 결과를 읽는 기준이 분명해집니다.
 
@@ -850,15 +838,78 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 
 ## 🔑 트러블슈팅
 
-| 문제 | 원인 | 해결 |
-| --- | --- | --- |
-| 공고의 참가자격 요건이 판정기까지 하나도 도달하지 않음 | 청크 선별기가 `3. 입찰참가자격` 아래 `가./나./다.`를 다음 상위 제목으로 판단해 LLM에 보내지 않음 | 숫자·한글·괄호형 제목의 위계를 분리해 자격 절 하위 항목이 함께 전달되도록 수정 |
-| 행정통합 지역에서 자격 있는 회사를 「미달」로 확정 | 지역 판정이 글자 비교라 「전남광주통합특별시」와 「종전 광주광역시」의 포함 관계를 모름 | 하위→상위 표를 두고, 프로필이 상위 단위라 가를 수 없으면 미달이 아니라 「확인 필요」로 넘김 |
-| 같은 표현인데 근거 검증 실패 | 원문의 `수집․운반업`과 추출 결과의 `수집·운반업`이 가운데점 문자가 다름 | 비교할 때만 NFKC와 가운데점 변형을 정규화. 저장되는 원문은 바꾸지 않음 |
-| 같은 버전에 분석이 밀리초 단위로 두 번 생성 | 기준 차수와 현재 차수가 같은 검토 건에서 화면이 두 분석을 병렬 실행해 동일 API를 동시에 두 번 호출 | 기준 ≥ 현재인 검토 건 생성을 백엔드에서 차단하고, 동일 버전은 한 번만 분석하도록 방어 |
-| 이동 버튼을 눌러도 서버 요청이 발생하지 않음 | `Link`/`a` 안에 `Button`을 중첩한 구조. `a` 안의 `button`은 HTML에서 무효라 클릭이 삼켜짐 | Base UI Button의 `render` prop으로 감싸 실제 렌더가 단일 `a` 요소가 되게 수정 (11곳) |
-| 자격 있는 회사인데 업종 요건이 「미달」로 확정될 수 있었음 | 업종 판정이 코드와 이름을 둘 다 대조하는데, 공용 DB 업종 마스터 14건의 이름 자리에 코드가 그대로 들어가 있었음. 공고가 업종을 이름으로 적으면 매칭이 실패 | 마스터 CSV의 정상 이름으로 되돌림. 이름이 코드와 같은 행만 고치고, CSV에 없는 코드는 이름을 지어내지 않고 남겨둠 |
-| **같은 문서·같은 청크인데 추출 결과가 실행마다 다름** | 문서 해시·청크 목록이 모두 동일한데 구조화 요건 수가 `3·1·3·3`처럼 흔들림. 복합조건 처리와 관련된 것으로 보임 | **진행 중.** 조건을 하나 바꾸면 다른 쪽이 깨지는 구조라 원인 분리 중 |
+실제로 막혔던 6건과, 아직 잡고 있는 1건입니다.
+
+<details>
+<summary><b>공고의 참가자격 요건이 판정기까지 하나도 도달하지 않음</b></summary>
+
+<br>
+
+- **원인** 청크 선별기가 `3. 입찰참가자격` 아래 `가./나./다.`를 다음 상위 제목으로 판단해 LLM에 보내지 않음
+- **해결** 숫자·한글·괄호형 제목의 위계를 분리해 자격 절 하위 항목이 함께 전달되도록 수정
+
+</details>
+
+<details>
+<summary><b>행정통합 지역에서 자격 있는 회사를 「미달」로 확정</b></summary>
+
+<br>
+
+- **원인** 지역 판정이 글자 비교라 「전남광주통합특별시」와 「종전 광주광역시」의 포함 관계를 모름
+- **해결** 하위→상위 표를 두고, 프로필이 상위 단위라 가를 수 없으면 미달이 아니라 「확인 필요」로 넘김
+
+</details>
+
+<details>
+<summary><b>같은 표현인데 근거 검증 실패</b></summary>
+
+<br>
+
+- **원인** 원문의 `수집․운반업`과 추출 결과의 `수집·운반업`이 가운데점 문자가 다름
+- **해결** 비교할 때만 NFKC와 가운데점 변형을 정규화. 저장되는 원문은 바꾸지 않음
+
+</details>
+
+<details>
+<summary><b>같은 버전에 분석이 밀리초 단위로 두 번 생성</b></summary>
+
+<br>
+
+- **원인** 기준 차수와 현재 차수가 같은 검토 건에서 화면이 두 분석을 병렬 실행해 동일 API를 동시에 두 번 호출
+- **해결** 기준 ≥ 현재인 검토 건 생성을 백엔드에서 차단하고, 동일 버전은 한 번만 분석하도록 방어
+
+</details>
+
+<details>
+<summary><b>이동 버튼을 눌러도 서버 요청이 발생하지 않음</b></summary>
+
+<br>
+
+- **원인** `Link`/`a` 안에 `Button`을 중첩한 구조. `a` 안의 `button`은 HTML에서 무효라 클릭이 삼켜짐
+- **해결** Base UI Button의 `render` prop으로 감싸 실제 렌더가 단일 `a` 요소가 되게 수정 (11곳)
+
+</details>
+
+<details>
+<summary><b>자격 있는 회사인데 업종 요건이 「미달」로 확정될 수 있었음</b></summary>
+
+<br>
+
+- **원인** 업종 판정이 코드와 이름을 둘 다 대조하는데, 공용 DB 업종 마스터 14건의 이름 자리에 코드가 그대로 들어가 있었음. 공고가 업종을 이름으로 적으면 매칭이 실패
+- **해결** 마스터 CSV의 정상 이름으로 되돌림. 이름이 코드와 같은 행만 고치고, CSV에 없는 코드는 이름을 지어내지 않고 남겨둠
+- **주의** Golden 회귀는 마스터를 조회하지 않으므로 8.3의 회귀 수치는 이 수정으로 바뀌지 않음
+
+</details>
+
+<details>
+<summary><b>⚠️ 같은 문서·같은 청크인데 추출 결과가 실행마다 다름 — 진행 중</b></summary>
+
+<br>
+
+- **원인** 문서 해시·청크 목록이 모두 동일한데 구조화 요건 수가 `3·1·3·3`처럼 흔들림. 복합조건 처리와 관련된 것으로 보임
+- **현재** 조건을 하나 바꾸면 다른 쪽이 깨지는 구조라 원인 분리 중
+
+</details>
 
 ---
 
@@ -876,18 +927,16 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 | Evidence 연결 | 구현 | 의미 단위 정확도 검수 진행 |
 | Requirement Diff·재검증 | 구현·합성 회귀 통과 | 실제 G2 Human Validation 진행 |
 | AI Copilot | 현재 Case 중심 조회·확인형 Action 구현 | 사용자 Task 평가 대기 |
-| 7개 제품 화면 | Route와 주요 API 연결 | 전체 Human Click E2E 대기 |
+| 제품 화면 7종 | Route와 주요 API 연결 | 전체 Human Click E2E 대기 |
 | 배포 | vinext + nginx 구성 운영 중 | 배포 자동화 미확정 |
 
 ### 현재 한계
 
-- Golden Fixture의 기대값은 독립 검수자 승인 전 초안입니다.
-- 실제 변경공고 G2는 후보를 확보했지만 Ground Truth 확정 전입니다.
-- Requirement Extraction, Copilot, 사용자 E2E의 최종 성능 수치는 아직 확정하지 않았습니다.
+- Golden Fixture의 기대값은 독립 검수자 승인 전 초안이며, 실제 변경공고 G2도 Ground Truth 확정 전입니다.
+- Requirement Extraction·Copilot·사용자 E2E의 최종 성능 수치는 아직 확정하지 않았습니다.
 - 동일 입력에서 Requirement 추출 결과가 실행마다 달라지는 문제를 확인했고 개선 진행 중입니다.
 - Document RAG는 현재 공고 버전 범위에서 동작하며 cross-version QA는 지원하지 않습니다.
 - 평가 대응 화면은 참가자격 기반 참고 정보이며 평가항목 전용 추출이나 점수 예측 기능이 아닙니다.
-- 외부 운영 배포 완료를 주장하지 않습니다.
 
 ### 다음 개선
 
@@ -901,15 +950,25 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 
 ## 💬 9. 한 줄 회고
 
-> 🚧 **제출 직전에 각자 작성** — 1인 2~3줄
+> 🚧 **전진환 · 황수빈 작성 대기**
 
 **김재현**
 
+예상했던 것보다 구현의 난이도가 높았다.
+모델의 성능을 너무 믿고 분석 자체는 쉬운 과제일 거라고 생각했는데 문맥을 이해하지 못하는 경우가 많아 실제 서비스에서는 LLM 호출보다 코드 비중이 높아진 점이 매우 아쉽다.
+또한 사람에게는 단순한 선별 문제인데도 컴퓨터가 판별할 수 있는 단위로 쪼개는 작업에서 저마다 다른 형식으로 작성된 문서를 일관되게 처리하지 못하는 한계로 발생한 오류들이 많았으며, 이 부분에 대한 사전 이해도를 먼저 갖추고 작업에 임했더라면 시행착오가 줄었을 것으로 판단되어 아쉬움으로 남는다.
+또한 파인 튜닝 등의 성능 향상 작업도 계획하였으나 구현하지 못하여 아쉬웠으며, 당초 계획했던 로컬 모델 적용과 API 모델과의 성능 비교를 진행하지 못한 점, 회사 프로필을 공고와 대조하여 사업계획서의 초안을 작성해주는 기능은 일단 구현에는 성공하였으나 미흡한 성능, 팀의 일정 상 추가하지 못한 점 역시도 아쉬웠다.
+
 **이홍규**
+
+이번 프로젝트를 진행하며 가장 크게 느낀 점은 협업에서 소통이 생각보다 훨씬 중요하다는 것이었다. 각자 맡은 기능을 잘 구현하는 것도 중요하지만, 진행상황이나 변경사항, 막힌 부분이 제때 공유되지 않으면 다른 파트의 작업과 전체 일정에도 영향을 줄 수 있다는 것을 여러 번 경험했다. 또한 Frontend, Backend, DB, LLM/RAG가 서로 연결되는 과정에서도 각자가 같은 기준과 맥락을 이해하고 있는지가 중요하다는 점을 느꼈다. AI와 다양한 협업 도구를 활용하면서도 결국 도구보다 중요한 것은 필요한 정보를 서로 정확하게 공유하고 이해하는 과정이라는 생각이 들었다. 앞으로는 내 역할을 잘 수행하는 것뿐 아니라, 함께 일하는 사람들이 같은 상황을 이해하고 움직일 수 있도록 소통하는 방식도 중요하게 가져가고 싶다.
 
 **전진환**
 
 **정예린**
+
+DB/Data 파트를 맡으며 가장 크게 느낀 건, 「데이터가 있어 보이는 것」과 「실제로 맞는 데이터」는 다르고 이 차이를 매 단계 검증하지 않으면 그 오차가 그대로 판정 결과까지 흘러간다는 점이었다. 골든셋 20건 중 우치공원 공고를 검수하다가, 팀 DB엔 버전이 4개뿐인데 실제 나라장터엔 변경·취소가 더 있었다는 걸 발견했다. 원본 PDF와 수집 로그를 직접 대조해서 「새 공고를 뒤늦게 발견하면 과거 이력을 안 훑는」 구조적 사각지대를 찾아냈고, 이걸 고쳐서 팀이 쓰는 골든셋 기준 자체의 신뢰도를 한 단계 올릴 수 있었다.
+이 경험 이후로 확인된 내용도 한 번 더 검증하는 방식으로 작업했는데, 실제로 공용 Supabase 커넥션 풀 제한으로 팀원 작업이 멈췄던 일을 겪으면서 데이터 이슈 하나가 나 혼자의 문제가 아니라 팀 전체 진행 속도에 직결된다는 걸 체감했다.
 
 **황수빈**
 
