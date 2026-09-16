@@ -68,13 +68,11 @@
 
 **팀명** SKN34 3차 4팀
 
-| 팀원 | 주요 담당 | GitHub |
-| --- | --- | --- |
-| 김재현 | LLM / RAG · Requirement Extraction · Evaluation | [@kim-4480](https://github.com/kim-4480) |
-| 이홍규 | LLM / RAG · AI Copilot · 협업 인프라 | [@4hglee-ops](https://github.com/4hglee-ops) |
-| 전진환 | Backend · API · 전체 시스템 구성 | [@dfs32dfs](https://github.com/dfs32dfs) |
-| 정예린 | DB · Data Collection / Management | [@Rei](https://github.com/Rei) |
-| 황수빈 | 기획 · Frontend · UI/UX | [@subinss838](https://github.com/subinss838) |
+| 팀원 | 김재현 | 이홍규 | 전진환 | 정예린 | 황수빈 |
+| --- | --- | --- | --- | --- | --- |
+| 사진 | <img width="140" height="140" style="object-fit:cover;border-radius:12px;background:#f6f7f9;" alt="재현" src="https://soopool.art/img/infoacpc/loadingscreen_png/%EC%A0%9C%EC%B2%9C.png" /> | <img width="140" height="140" style="object-fit:cover;border-radius:12px;background:#f6f7f9;" alt="홍규" src="https://soopool.art/img/infoacpc/loadingscreen_png/%EB%A6%AC%EC%B2%98%EB%93%9C.png" /> | <img width="140" height="140" style="object-fit:cover;border-radius:12px;background:#f6f7f9;" alt="진환" src="https://soopool.art/img/infoacpc/loadingscreen_png/%EC%9E%AD%EC%8A%A8.png" /> | <img width="140" height="140" style="object-fit:cover;border-radius:12px;background:#f6f7f9;" alt="예린" src="https://soopool.art/img/infoacpc/loadingscreen_png/%EB%A6%B4%EB%A6%AC%EC%95%88.png" /> | <img width="140" height="140" style="object-fit:cover;border-radius:12px;background:#f6f7f9;" alt="수빈" src="https://soopool.art/img/infoacpc/loadingscreen_png/%EC%82%AC%EB%9D%BC.png" /> |
+| GitHub | [@kim-4480](https://github.com/kim-4480) | [@4hglee-ops](https://github.com/4hglee-ops) | [@dfs32dfs](https://github.com/dfs32dfs) | [@Rei](https://github.com/yerin816) | [@subinss838](https://github.com/subinss838) |
+| 주요 담당 | LLM / RAG · Requirement Extraction · Evaluation | LLM / RAG · AI Copilot · 협업 인프라 | Backend · API · 전체 시스템 구성 | DB · Data Collection / Management | 기획 · Frontend · UI/UX |
 
 프로젝트는 각 파트가 독립적으로 결과물을 만드는 방식보다 다음 연결을 중요하게 두었습니다.
 
@@ -870,12 +868,19 @@ Document RAG 평가에서는 기본 Hybrid Retrieval의 Evidence Recall@4 50.00%
 > 🚧 **제출 직전에 각자 작성** — 1인 1문단
 
 **김재현**
+예상했던 것보다 구현의 난이도가 높았다. 
+모델의 성능을 너무 믿고 분석 자체는 쉬운 과제일 거라고 생각했는데 문맥을 이해하지 못하는 경우가 많아 실제 서비스에서는 LLM 호출보다 코드 비중이 높아진 점이 매우 아쉽다.
+또한 사람에게는 단순한 선별 문제인데도 컴퓨터가 판별할 수 있는 단위로 쪼개는 작업에서 저마다 다른 형식으로 작성된 문서를 일관되게 처리하지 못하는 한계로 발생한 오류들이 많았으며, 이 부분에 대한 사전 이해도를 먼저 갖추고 작업에 임했더라면 시행착오가 줄었을 것으로 판단되어 아쉬움으로 남는다.
+또한 파인 튜닝 등의 성능 향상 작업도 계획하였으나 구현하지 못하여 아쉬웠으며, 당초 계획했던 로컬 모델 적용과 api모델과의 성능 비교를 진행하지 못한 점, 회사 프로필을 공고와 대조하여 사업계획서의 초안을 작성해주는 기능은 일단 구현에는 성공하였으나 미흡한 성능, 팀의 일정 상 추가하지 못한 점 역시도 아쉬웠다. 
 
 **이홍규**
+이번 프로젝트를 진행하며 가장 크게 느낀 점은 협업에서 소통이 생각보다 훨씬 중요하다는 것이었다. 각자 맡은 기능을 잘 구현하는 것도 중요하지만, 진행상황이나 변경사항, 막힌 부분이 제때 공유되지 않으면 다른 파트의 작업과 전체 일정에도 영향을 줄 수 있다는 것을 여러 번 경험했다. 또한 Frontend, Backend, DB, LLM/RAG가 서로 연결되는 과정에서도 각자가 같은 기준과 맥락을 이해하고 있는지가 중요하다는 점을 느꼈다. AI와 다양한 협업 도구를 활용하면서도 결국 도구보다 중요한 것은 필요한 정보를 서로 정확하게 공유하고 이해하는 과정이라는 생각이 들었다. 앞으로는 내 역할을 잘 수행하는 것뿐 아니라, 함께 일하는 사람들이 같은 상황을 이해하고 움직일 수 있도록 소통하는 방식도 중요하게 가져가고 싶다.
 
 **전진환**
 
 **정예린**
+DB/Data 파트를 맡으며 가장 크게 느낀건, "데이터가 있어 보이는 것"과 "실제로 맞는 데이터"는 다르고 이 차이를 매 단계 검증하지않으면 그 오차가 그대로 판정결과까지 흘러간다는점이었다. 골든셋 20건 중 우치공원공고를 검수하다가, 팀 DB엔 버전이 4개뿐인데 실제 나라장터엔 변경/취소가 더 있었다는 걸 발견했다. 원본 PDF와 수집로그를 직접 대조해서 "새 공고를 뒤늦게 발견하면 과거 이력을 안훑는" 구조적 사각지대를 찾아냈고, 이걸 고쳐서 팀이 쓰는 골든셋 기준 자체의 신뢰도를 한 단계 올릴 수 있었다.
+이 경험 이후로 확인된 내용도 한번 더 검증하는 방식으로 작업했는데, 실제로 공용 Supabase 커넥션 풀 제한으로 팀원 작업이 멈췄던 일을 겪으면서 데이터 이슈 하나가 나 혼자의 문제가 아니라 팀 전체 진행속도에 직결된다는 걸 체감했다.
 
 **황수빈**
 
