@@ -253,23 +253,10 @@ flowchart TD
 
 기획 → 설계 → 구현 → 검증 → 제출 5단계로 진행합니다. 담당은 파트 단위로 적었습니다.
 
-```mermaid
-gantt
-    title 5단계 진행 (2026-09)
-    dateFormat YYYY-MM-DD
-    axisFormat %m/%d
-    section 기획
-    주제 확정 · 요구사항 명세 · 팀 규칙 :done, a1, 2026-09-01, 3d
-    section 설계
-    화면설계 · 스키마 v2 · API 명세 · 추출 계약 :done, a2, 2026-09-04, 5d
-    section 구현
-    수집 · 추출 · 판정 엔진 · 화면 7종 · 인증 :done, a3, 2026-09-08, 7d
-    section 검증
-    Golden Fixture · Flow QA · 실공고 E2E :active, a4, 2026-09-11, 6d
-    section 제출
-    최종 수정 · 캡처 · 측정 · README :active, a5, 2026-09-15, 3d
-    발표 :milestone, m1, 2026-09-17, 0d
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/wbs-dark.png">
+  <img alt="WBS 5단계 진행 타임라인 — 기획 09/01~09/03, 설계 09/04~09/08, 구현 09/08~09/14, 검증 09/11~09/16, 제출 09/15~09/17, 발표 09/17" src="docs/assets/wbs-light.png" width="100%">
+</picture>
 
 | 단계 | 기간 | 핵심 산출물 |
 | --- | --- | --- |
@@ -385,13 +372,27 @@ gantt
 ### 도메인 지도
 
 ```mermaid
-flowchart LR
-    A["① 공고 · 버전 · 원문 문서<br/>8개"] --> C["③ 참가자격 검토 Case<br/>2개"]
-    B["② 회사 프로필<br/>9개"] --> C
-    C --> D["④ 자격요건 분석 · 판정<br/>5개"]
-    D --> E["⑤ 재검증 · Ask-back<br/>2개"]
+flowchart TB
+    A["① 공고 · 버전 · 원문 문서 — 8개"]
+    B["② 회사 프로필 — 9개"]
+    C["③ 참가자격 검토 Case — 2개"]
+    D["④ 자격요건 분석 · 판정 — 5개"]
+    E["⑤ 재검증 · Ask-back — 2개"]
+    F["⑥ 계약조항 검토 — 2개"]
+
+    A --> C
+    B --> C
+    C --> D
+    D --> E
     A -. "공고 변경 발생 시" .-> E
-    A --> F["⑥ 계약조항 검토<br/>2개"]
+    A --> F
+
+    classDef src fill:none,stroke:#8792b5,stroke-width:2px,color:#2b3350
+    classDef core fill:none,stroke:#2a78d6,stroke-width:3px,color:#123a6b
+    classDef out fill:none,stroke:#1baf7a,stroke-width:2px,color:#0f4f39
+    class A,B src
+    class C,D core
+    class E,F out
 ```
 
 | 도메인 | 테이블 | 수 |
@@ -414,22 +415,22 @@ flowchart LR
 erDiagram
     BID_NOTICES ||--o{ BID_NOTICE_VERSIONS : "차수 (덮어쓰지 않음)"
     BID_NOTICE_VERSIONS ||--o{ NOTICE_DOCUMENTS : "첨부"
-
     BID_NOTICE_VERSIONS ||--o{ QUALIFICATION_ANALYSIS_RUNS : "요건 추출 (LLM)"
     QUALIFICATION_ANALYSIS_RUNS ||--o{ QUALIFICATION_REQUIREMENTS : "구조화 요건"
     QUALIFICATION_ANALYSIS_RUNS ||--o{ QUALIFICATION_EVIDENCE : "원문 근거"
+```
 
+**검토 건 하나에 판정이 매달리는 구조** — 회사와 공고가 만나 검토 건이 되고, 그 아래로 판정 · Ask-back · 재검증이 붙습니다.
+
+```mermaid
+erDiagram
     COMPANIES ||--o{ PREFLIGHT_CASES : "검토 건"
     BID_NOTICES ||--o{ PREFLIGHT_CASES : "검토 건"
-    BID_NOTICE_VERSIONS ||--o{ PREFLIGHT_CASES : "기준 차수 · 현재 차수"
-
+    BID_NOTICE_VERSIONS ||--o{ PREFLIGHT_CASES : "기준 · 현재 차수"
     PREFLIGHT_CASES ||--o{ QUALIFICATION_JUDGMENT_RUNS : "판정 실행"
-    QUALIFICATION_ANALYSIS_RUNS ||--o{ QUALIFICATION_JUDGMENT_RUNS : "무엇을 판정했나"
     QUALIFICATION_JUDGMENT_RUNS ||--o{ QUALIFICATION_JUDGMENTS : "요건별 판정"
-
     QUALIFICATION_JUDGMENT_RUNS ||--o{ QUALIFICATION_ANSWERS : "Ask-back"
     QUALIFICATION_JUDGMENT_RUNS ||--o{ QUALIFICATION_REVALIDATION_RUNS : "변경 재검증"
-    QUALIFICATION_ANALYSIS_RUNS ||--o{ QUALIFICATION_REVALIDATION_RUNS : "기준 · 현재 분석"
 ```
 
 **판정 하나가 무엇에 묶여 있는지** — `qualification_judgment_runs`는 검토 건 · 분석 Run · 회사 · 공고 차수를 모두 참조하고, `profile_snapshot`에 판정 시점의 회사 정보를 통째로 남깁니다. 회사 정보가 나중에 바뀌어도 과거 판정이 **어떤 회사 정보로 계산됐는지** 그대로 남습니다.
@@ -524,12 +525,26 @@ flowchart LR
 ### 7.3 변경공고 재검증
 
 ```mermaid
-flowchart LR
-    A["기준 공고<br/>분석·판정"] --> B["변경공고<br/>수집·버전 생성"]
-    B --> C["Canonical<br/>Requirement Diff"]
-    C --> D["ADDED / MODIFIED<br/>/ REMOVED 식별"]
-    D --> E["영향받은 현재<br/>Requirement만 재판정"]
-    E --> F["변경 전·후 결과와<br/>Evidence 비교"]
+flowchart TB
+    A["기준 공고 — 분석 · 판정 완료"]
+    B["변경공고 수집 · 새 차수 생성"]
+    C["Canonical Requirement Diff"]
+    D["ADDED / MODIFIED / REMOVED 식별"]
+    E{"판정 전제가 그대로인가<br/>회사 프로필 · 판정 기준일"}
+    F["영향받은 요건만 재판정"]
+    G["전체 재판정 요구"]
+    H["변경 전 · 후 결과와 Evidence 비교"]
+
+    A --> B --> C --> D --> E
+    E -->|"그대로"| F --> H
+    E -->|"바뀜"| G --> H
+
+    classDef rule fill:none,stroke:#1baf7a,stroke-width:3px,color:#0f4f39
+    classDef plain fill:none,stroke:#b9bccb,stroke-width:1.5px,color:#2b3350
+    classDef warn fill:none,stroke:#eda100,stroke-width:2.5px,color:#6b4a00
+    class C,D,F,H rule
+    class A,B plain
+    class E,G warn
 ```
 
 코드 경로와 합성 회귀 테스트는 구현되어 있습니다. 변경되지 않은 요건은 기존 판정을 승계하고, 추가·수정된 요건만 현재 회사 프로필로 다시 판정합니다. 기준 판정 이후 회사 프로필이나 판정 기준일이 바뀌었다면 부분 재검증을 중단하고 전체 재판정을 요구합니다.
