@@ -1,18 +1,10 @@
 <div align="center">
 
-# 🔍 비드체크 · BidCheck
+# 🔍 나라장터 변경공고 대응형 입찰 제출 검증기
 
-**나라장터 변경공고 대응형 입찰 제출 검증기**
-
-회사 정보를 기준으로 공고 참가자격을 원문 근거와 함께 판정하고,<br/>공고가 바뀌면 영향받은 요건만 다시 검증합니다.
+**회사 정보를 기준으로 공고 참가자격을 원문 근거와 함께 판정하고,<br/>공고가 바뀌면 영향받은 요건만 다시 검증합니다.**
 
 `SK Networks Family AI Camp 34기` &nbsp;·&nbsp; `3차 프로젝트` &nbsp;·&nbsp; `4팀`
-
-<br/>
-
-[![golden-regression](https://github.com/gyuniverse-hq/bid-change-validator/actions/workflows/golden-regression.yml/badge.svg?branch=develop)](https://github.com/gyuniverse-hq/bid-change-validator/actions/workflows/golden-regression.yml)
-[![MVP Integration Baseline](https://github.com/gyuniverse-hq/bid-change-validator/actions/workflows/mvp-integration-baseline.yml/badge.svg?branch=develop)](https://github.com/gyuniverse-hq/bid-change-validator/actions/workflows/mvp-integration-baseline.yml)
-[![Copilot integration](https://github.com/gyuniverse-hq/bid-change-validator/actions/workflows/copilot-integration.yml/badge.svg?branch=develop)](https://github.com/gyuniverse-hq/bid-change-validator/actions/workflows/copilot-integration.yml)
 
 <br/>
 
@@ -26,18 +18,14 @@
 
 </div>
 
-구현 기준 — [`gyuniverse-hq/bid-change-validator@develop`](https://github.com/gyuniverse-hq/bid-change-validator/tree/develop) (`c26cdca`, 2026-09-14)
-
-> 코드 구현 / 회귀 검증 / 실데이터 검수
-> 완료 여부를 구분하여 표시합니다.
+> **README v0.4 · 구현 기준: `gyuniverse-hq/bid-change-validator` `develop` (`c26cdca`, 2026-09-14)**
+> 코드 구현, 회귀 검증, 실데이터 검수 완료 여부를 구분하여 표시합니다.
 
 <details>
 <summary><b>목차</b></summary>
 
 <br>
 
-- [프로젝트 한눈에 보기](#프로젝트-한눈에-보기)
-- [핵심 결과](#-핵심-결과)
 - [시연 영상](#-시연-영상)
 - [1. 팀 소개](#-1-팀-소개)
 - [2. 프로젝트 개요](#-2-프로젝트-개요)
@@ -49,7 +37,6 @@
 - [프로젝트 구조](#-프로젝트-구조)
 - [실행 방법](#️-실행-방법)
 - [8. 수행결과](#-8-수행결과-테스트-및-시연-페이지)
-- [검토했지만 쓰지 않은 것](#-검토했지만-쓰지-않은-것)
 - [트러블슈팅](#-트러블슈팅)
 - [현재 구현 상태와 한계](#-현재-구현-상태와-한계)
 - [9. 한 줄 회고](#-9-한-줄-회고)
@@ -63,27 +50,11 @@
 | 질문 | 답변 |
 | --- | --- |
 | 어떤 문제를 해결하나요? | 변경공고 이후 기존 입찰 준비가 여전히 유효한지 다시 확인합니다. |
+| 무엇을 비교하나요? | 이전·최신 공고 버전, 참가자격 Requirement, 회사 프로필을 비교합니다. |
+| 무엇을 다시 검증하나요? | 변경의 영향을 받은 Requirement만 추적하여 재판정합니다. |
 | AI는 어디에 사용하나요? | 문서에서 Requirement를 구조화하고, 근거 탐색과 사용자 질의를 지원합니다. |
 | 최종 판정은 어떻게 하나요? | 구조화된 Requirement와 회사 정보를 결정론적 Rule로 비교합니다. |
 | 현재 검증 수준은 무엇인가요? | 합성 회귀는 운영 중이며, 실제 변경공고 Ground Truth와 사용자 E2E는 검증 중입니다. |
-
----
-
-## 📊 핵심 결과
-
-| 항목 | 결과 |
-| --- | --- |
-| 판정 회귀 기대값 일치 | **110 / 138** 요건 (초기 기준선 104/138) |
-| 잘못된 확정 판정 | **0건** — 기준선·최신 회귀 모두 |
-| 안전한 보류 | 28 / 138 |
-| 공고 단위 상태 일치 | **37 / 40** |
-| 근거 인용 버전 무결성 | **100%** |
-| DB 규모 | 도메인 테이블 **30개** + 코드표 4개 · 마이그레이션 022 |
-| 요구사항 | 비기능 11건 · 기능 **70건**(8영역) |
-| 제품 화면 | **7종** |
-
-> 위 수치는 승인 전 `DRAFT` Golden Fixture에 Canonical Requirement를 직접 입력한 **Rule 회귀 지표**입니다.
-> Requirement Extraction 성능이나 서비스 전체 정확도가 아닙니다. 공고 20건 · 요건 138행 기준입니다.
 
 ---
 
@@ -97,17 +68,23 @@
 
 **팀명** SKN34 3차 4팀
 
-| 팀원 | 주요 담당 | GitHub |
-| --- | --- | --- |
-| 김재현 | LLM / RAG · Requirement Extraction · Evaluation | [@kim-4480](https://github.com/kim-4480) |
-| 이홍규 | LLM / RAG · AI Copilot · 협업 인프라 | [@4hglee-ops](https://github.com/4hglee-ops) |
-| 전진환 | Backend · API · 전체 시스템 구성 | [@dfs32dfs](https://github.com/dfs32dfs) |
-| 정예린 | DB · Data Collection / Management | [@yerin816](https://github.com/yerin816) |
-| 황수빈 | 기획 · Frontend · UI/UX | [@subinss838](https://github.com/subinss838) |
+| 팀원 | 김재현 | 이홍규 | 전진환 | 정예린 | 황수빈 |
+| --- | --- | --- | --- | --- | --- |
+| 사진 | <img width="140" height="140" style="object-fit:cover;border-radius:12px;background:#f6f7f9;" alt="재현" src="https://soopool.art/img/infoacpc/loadingscreen_png/%EC%A0%9C%EC%B2%9C.png" /> | <img width="140" height="140" style="object-fit:cover;border-radius:12px;background:#f6f7f9;" alt="홍규" src="https://soopool.art/img/infoacpc/loadingscreen_png/%EB%A6%AC%EC%B2%98%EB%93%9C.png" /> | <img width="140" height="140" style="object-fit:cover;border-radius:12px;background:#f6f7f9;" alt="진환" src="https://soopool.art/img/infoacpc/loadingscreen_png/%EC%9E%AD%EC%8A%A8.png" /> | <img width="140" height="140" style="object-fit:cover;border-radius:12px;background:#f6f7f9;" alt="예린" src="https://soopool.art/img/infoacpc/loadingscreen_png/%EB%A6%B4%EB%A6%AC%EC%95%88.png" /> | <img width="140" height="140" style="object-fit:cover;border-radius:12px;background:#f6f7f9;" alt="수빈" src="https://soopool.art/img/infoacpc/loadingscreen_png/%EC%82%AC%EB%9D%BC.png" /> |
+| GitHub | [@kim-4480](https://github.com/kim-4480) | [@4hglee-ops](https://github.com/4hglee-ops) | [@dfs32dfs](https://github.com/dfs32dfs) | [@Rei](https://github.com/yerin816) | [@subinss838](https://github.com/subinss838) |
+| 주요 담당 | LLM / RAG · Requirement Extraction · Evaluation | LLM / RAG · AI Copilot · 협업 인프라 | Backend · API · 전체 시스템 구성 | DB · Data Collection / Management | 기획 · Frontend · UI/UX |
 
-각 파트가 독립적으로 결과물을 만드는 방식보다 파트 사이의 연결을 중요하게 두었습니다.
+프로젝트는 각 파트가 독립적으로 결과물을 만드는 방식보다 다음 연결을 중요하게 두었습니다.
 
-`Frontend ↔ Backend ↔ DB/Data ↔ LLM/RAG`
+```text
+Frontend
+   ↕
+Backend
+   ↕
+DB / Data
+   ↕
+LLM / RAG
+```
 
 각 파트의 출력이 실제 사용자 흐름에서 연결되는지를 기준으로 통합했습니다.
 
@@ -115,13 +92,18 @@
 
 실제 개발은 다음 GitHub 중심 흐름으로 진행했습니다.
 
-```mermaid
-flowchart LR
-    A["GitHub Issue"] --> B["Feature / Fix<br/>Branch"]
-    B --> C["Pull Request"]
-    C --> D["Review / Test"]
-    D --> E["Merge"]
-    E --> F["통합 상태 확인"]
+```text
+GitHub Issue
+    ↓
+Feature / Fix Branch
+    ↓
+Pull Request
+    ↓
+Review / Test
+    ↓
+Merge
+    ↓
+통합 상태 확인
 ```
 
 - 기능 또는 수정 단위로 Branch와 Pull Request를 만들었습니다.
@@ -136,35 +118,53 @@ flowchart LR
 
 ## 📌 2. 프로젝트 개요
 
-입찰 담당자는 공고 하나를 검토할 때 업종·지역·실적·인증 같은 참가자격 조건을 공고문과 첨부문서에서 찾아 회사 정보와 하나씩 맞춰봅니다. 문제는 나라장터 공고가 최초 게시 이후에도 정정·변경·취소된다는 점입니다. 조건이 바뀌면 이미 끝낸 검토가 조용히 무효가 됩니다.
+### 프로젝트 명
 
-**비드체크는 그 검토를 한 번 하고 끝내지 않습니다.** 공고문과 첨부문서에서 참가자격 요건을 근거가 되는 원문 위치와 함께 뽑아 회사 프로필과 대조하고, 변경공고가 올라오면 **그 변경이 기존 판정의 무엇을 무효로 만드는지**를 찾아 해당 요건만 다시 판정합니다.
+**나라장터 변경공고 대응형 입찰 제출 검증기**
 
-요건을 구조화하는 일은 AI가 하고, **참가 가능 여부는 결정론적 규칙이 정합니다.** 같은 입력이면 같은 결과가 나오며, 근거를 찾지 못한 항목은 판정하지 않습니다.
+나라장터 입찰 공고는 최초 게시 이후에도 정정·변경·취소될 수 있습니다.
+
+기업이 이미 참가자격을 검토하고 제출서류를 준비한 상황에서 변경공고가 발생하면, 담당자는 공고 전체를 다시 확인하면서 다음 질문에 답해야 합니다.
+
+> **무엇이 바뀌었고, 기존에 준비한 입찰에 어떤 영향을 주는가?**
+
+본 프로젝트는 실제 나라장터 공고와 첨부문서를 수집하고, 참가자격 요건과 원문 근거를 구조화하여 기업 정보를 기준으로 판정합니다.
+
+이후 변경공고가 발생하면 이전 버전과 현재 버전을 비교하고, **실제로 영향을 받은 자격요건을 찾아 해당 항목만 다시 검증**합니다.
 
 ### 전체 흐름
 
-한 번 판정하고 끝나는 직선이 아닙니다. **정보가 부족하면 Ask-back으로, 공고가 바뀌면 재검증으로 판정 단계에 다시 돌아옵니다.**
-
-```mermaid
-flowchart TD
-    A["실제 나라장터 공고 조회"] --> B["공고문·첨부문서 수집"]
-    B --> C["공고 버전 및 원문 관리"]
-    C --> D["참가자격 Requirement 추출"]
-    D --> E["회사 프로필과 요건 비교"]
-    E --> F["참가자격 판정"]
-    F --> G["근거 원문 확인"]
-    G -- "정보 부족" --> H["Ask-back"]
-    H --> F
-    F -. "변경공고 발생" .-> I["이전 버전 ↔ 최신 버전 비교"]
-    I --> J["영향받은 Requirement 식별"]
-    J --> K["영향 요건만 재검증"]
-    K --> F
+```text
+실제 나라장터 공고 조회
+        ↓
+공고문·첨부문서 수집
+        ↓
+공고 버전 및 원문 관리
+        ↓
+참가자격 Requirement 추출
+        ↓
+회사 프로필과 요건 비교
+        ↓
+참가자격 판정
+        ↓
+근거 원문 확인
+        ↓
+정보 부족 시 Ask-back
+        ↓
+변경공고 발생
+        ↓
+이전 버전 ↔ 최신 버전 비교
+        ↓
+영향받은 Requirement 식별
+        ↓
+영향 요건만 재검증
 ```
 
-### 💡 배경 — 담당자가 실제로 확인하는 것
+### 💡 프로젝트 배경 및 문제 정의
 
-공고 하나에서 확인해야 하는 참가자격 조건은 다음과 같습니다.
+나라장터 입찰 담당자는 하나의 공고를 검토할 때 공고 제목이나 마감일만 확인하지 않습니다.
+
+다음과 같은 조건을 함께 확인해야 합니다.
 
 * 업종 및 면허 등록 조건
 * 지역 제한
@@ -177,7 +177,29 @@ flowchart TD
 * 공고 첨부문서
 * 변경·정정·취소 공고 이력
 
-이 조건들은 공고문 본문과 여러 개의 첨부문서에 흩어져 있습니다. 담당자가 이미 **참가 가능 판정 → 제출서류 준비 → 내부 검토**까지 마친 뒤에 변경공고가 올라오면, 어느 조건이 달라졌는지 확인하기 위해 전·후 공고문을 처음부터 다시 대조해야 합니다. **조건이 실제로 바뀐 것인지 문구만 다듬어진 것인지는 읽어보기 전까지 알 수 없습니다.**
+문제는 최초 검토 이후에도 공고 내용이 변경될 수 있다는 점입니다.
+
+예를 들어 기업이 이미 특정 공고에 대해
+
+```text
+참가 가능 판정
+→ 제출서류 준비
+→ 내부 검토
+```
+
+까지 완료했더라도, 이후 변경공고에서 지역이나 업종 조건이 수정되면 기존 판정 결과가 더 이상 유효하지 않을 수 있습니다.
+
+그러나 사용자가 직접 변경 전·후 공고문을 비교하려면 상당한 시간이 필요합니다.
+
+본 프로젝트는 단순히
+
+> "공고가 변경되었습니다."
+
+를 알려주는 것에서 끝나지 않고,
+
+> **"어떤 조건이 변경되었고, 그 변경으로 기존 참가자격 판정이 어떻게 달라졌는가?"**
+
+를 원문 근거와 함께 보여주는 것을 목표로 합니다.
 
 ### 🎯 프로젝트 목표
 
@@ -190,41 +212,84 @@ flowchart TD
 
 ### 핵심 기능
 
-**핵심 처리 흐름** — 위 다이어그램의 각 단계가 실제로 하는 일입니다.
+| 기능                  | 설명                                                 |
+| ------------------- | -------------------------------------------------- |
+| 나라장터 공고 조회          | 실제 나라장터 공고를 수집하고 검색하여 검토 대상을 선택합니다.                |
+| 공고 버전 관리            | 최초공고·변경공고 등 동일 공고의 버전을 관리합니다.                      |
+| 공고문·첨부문서 수집         | 공고 원문과 PDF/HWP/HWPX 등의 첨부문서를 함께 관리합니다.             |
+| 문서 Parsing          | 공고문과 첨부문서를 분석 가능한 텍스트 구조로 변환합니다.                   |
+| 참가자격 Requirement 추출 | 자연어 공고문에서 판정에 필요한 참가자격 요건과 근거를 구조화합니다.             |
+| 회사 프로필 매칭           | 회사가 보유한 등록·인증·지역·실적 등의 정보를 공고 요건과 비교합니다.           |
+| 결정론적 참가자격 판정        | Requirement와 회사 정보를 규칙으로 비교하여 상태를 판정합니다.           |
+| Ask-back            | 판정에 필요한 회사 정보가 부족한 경우 사용자가 답변 가능한 항목을 추가로 확인합니다.   |
+| 근거 원문 확인            | 판정 결과와 실제 공고 원문 Evidence를 연결하여 사용자가 직접 확인할 수 있습니다. |
+| 변경공고 Diff           | 이전 공고 버전과 최신 버전을 비교하여 변경 내용을 식별합니다.                |
+| 영향 요건 추적            | 변경 내용과 연결된 Requirement를 찾아 재검증 대상으로 지정합니다.         |
+| 변경공고 재검증            | 영향을 받은 Requirement만 다시 판정하여 기존 결과의 유효성을 확인합니다.     |
+| AI Copilot          | 현재 검토 건의 판정·근거·확인 필요 항목·회사 정보·변경 내역 조회를 지원합니다.     |
 
-| 기능 | 설명 |
-| --- | --- |
-| 나라장터 공고 조회 | 실제 나라장터 공고를 수집하고 검색하여 검토 대상을 선택합니다. |
-| 공고 버전 관리 | 최초공고·변경공고 등 동일 공고의 버전을 관리합니다. |
-| 공고문·첨부문서 수집 | 공고 원문과 PDF/HWP/HWPX 등의 첨부문서를 함께 관리합니다. |
-| 문서 Parsing | 공고문과 첨부문서를 분석 가능한 텍스트 구조로 변환합니다. |
-| 참가자격 Requirement 추출 | 자연어 공고문에서 판정에 필요한 참가자격 요건과 근거를 구조화합니다. |
-| 회사 프로필 매칭 | 회사가 보유한 등록·인증·지역·실적 등의 정보를 공고 요건과 비교합니다. |
-| 결정론적 참가자격 판정 | Requirement와 회사 정보를 규칙으로 비교하여 상태를 판정합니다. |
-| 근거 원문 확인 | 판정 결과와 실제 공고 원문 Evidence를 연결하여 사용자가 직접 확인할 수 있습니다. |
+### 대표 사용자 시나리오
 
-**지원 기능** — 판정이 막히거나 공고가 바뀔 때 동작합니다.
+**최초 공고 검토**
 
-| 기능 | 설명 |
-| --- | --- |
-| Ask-back | 판정에 필요한 회사 정보가 부족한 경우 사용자가 답변 가능한 항목을 추가로 확인합니다. |
-| 변경공고 Diff | 이전 공고 버전과 최신 버전을 비교하여 변경 내용을 식별합니다. |
-| 영향 요건 추적 | 변경 내용과 연결된 Requirement를 찾아 재검증 대상으로 지정합니다. |
-| 변경공고 재검증 | 영향을 받은 Requirement만 다시 판정하여 기존 결과의 유효성을 확인합니다. |
-| AI Copilot | 현재 검토 건의 판정·근거·확인 필요 항목·회사 정보·변경 내역 조회를 지원합니다. |
+```text
+사용자가 공고 검색
+        ↓
+검토할 공고 선택
+        ↓
+공고문 및 첨부문서 분석
+        ↓
+참가자격 Requirement 추출
+        ↓
+회사 프로필과 Requirement 비교
+        ↓
+참가자격 판정
+        ↓
+근거 원문 확인
+```
 
-### 회사 정보가 부족한 경우
+**회사 정보가 부족한 경우**
 
-공고에서 필요한 조건이 존재하지만 회사 프로필만으로 판단할 수 없는 경우, 모든 `UNKNOWN`을 동일하게 처리하지 않습니다. 사용자가 직접 답변하여 해결할 수 있는 항목만 Ask-back 대상으로 구분합니다.
+공고에서 필요한 조건이 존재하지만 회사 프로필만으로 판단할 수 없는 경우 모든 `UNKNOWN`을 동일하게 처리하지 않습니다.
 
-```mermaid
-flowchart TD
-    A["Requirement 판정"] --> B["UNKNOWN"]
-    B --> C{"사용자에게<br/>확인 가능한 정보인가?"}
-    C -- "Yes" --> D["Ask-back"]
-    C -- "No" --> E["확인 필요 상태 유지"]
-    D --> F["사용자 답변"]
-    F --> G["해당 Requirement 재판정"]
+사용자가 직접 답변하여 해결할 수 있는 항목은 Ask-back 대상으로 구분합니다.
+
+```text
+Requirement 판정
+      ↓
+UNKNOWN
+      ↓
+사용자에게 확인 가능한 정보인가?
+      ↓
+Yes ──→ Ask-back
+             ↓
+        사용자 답변
+             ↓
+        해당 Requirement 재판정
+
+No ──→ 확인 필요 상태 유지
+```
+
+**변경공고 발생**
+
+```text
+기준 공고 v1
+        ↓
+참가자격 판정 완료
+        ↓
+변경공고 v2 발생
+        ↓
+v1 ↔ v2 비교
+        ↓
+변경 내용 식별
+        ↓
+영향 Requirement 추적
+        ↓
+해당 Requirement만 재판정
+        ↓
+변경 전·후 판정 비교
+        ↓
+변경 근거 원문 확인
 ```
 
 ### 🚫 이 서비스가 하지 않는 것
@@ -260,7 +325,7 @@ flowchart TD
 
 ## 📅 4. WBS
 
-기획 → 설계 → 구현 → 검증 → 제출 5단계로 진행합니다. 담당은 파트 단위로 적었습니다.
+기획 → 설계 → 구현 → 검증 → 제출 5단계로 진행했습니다. 담당은 파트 단위로 적었습니다.
 
 | 단계 | 기간 | 핵심 산출물 |
 | --- | --- | --- |
@@ -376,6 +441,13 @@ flowchart LR
     D --> E["⑤ 재검증 · Ask-back<br/>2개"]
     A -. "공고 변경 발생 시" .-> E
     A --> F["⑥ 계약조항 검토<br/>2개"]
+
+    classDef src fill:#e8f0fe,stroke:#4285f4,stroke-width:2px,color:#174ea6
+    classDef core fill:#fff4d6,stroke:#e0a800,stroke-width:2px,color:#5c4500
+    classDef out fill:#e3f5e8,stroke:#34a853,stroke-width:2px,color:#14532d
+    class A,B src
+    class C,D core
+    class E,F out
 ```
 
 | 도메인 | 테이블 | 수 |
@@ -423,7 +495,6 @@ erDiagram
 **전체 ERD** — 도메인 7개 · 다이어그램 10장 · 테이블별 컬럼과 제약까지: [db-erd-current.md](https://github.com/gyuniverse-hq/bid-change-validator/blob/develop/docs/04_contracts/db-erd-current.md)
 
 ---
-
 ## 📚 7. 주요 프로시저
 
 ### 7.1 시스템 아키텍처
@@ -462,11 +533,11 @@ flowchart LR
     O --> I
     D --> R
 
-    classDef llm fill:none,stroke:#eda100,stroke-width:3px
-    classDef rule fill:none,stroke:#1baf7a,stroke-width:3px
-    classDef store fill:none,stroke:#8792b5,stroke-width:2px
-    classDef plain fill:none,stroke:#b9bccb,stroke-width:1.5px
-    classDef zone fill:none,stroke:#b9bccb,stroke-width:1px
+    classDef llm fill:#fff3cd,stroke:#d39e00,stroke-width:2px,color:#5c4500
+    classDef rule fill:#d9f2e3,stroke:#2e9e5b,stroke-width:2px,color:#14532d
+    classDef store fill:#eceff6,stroke:#8792b5,stroke-width:1.5px,color:#2b3350
+    classDef plain fill:#ffffff,stroke:#c4cada,stroke-width:1.5px,color:#2b3350
+    classDef zone fill:#fafbfd,stroke:#dfe3ec,stroke-width:1px,color:#6b7391
 
     class F,S llm
     class G,I,J,N,O rule
@@ -475,7 +546,7 @@ flowchart LR
     class collect,extract,judge,change,rag zone
 ```
 
-🟡 노란 테두리 — LLM이 하는 일 &nbsp;·&nbsp; 🟢 초록 테두리 — 코드가 결정론적으로 하는 일
+🟡 LLM이 하는 일 &nbsp;·&nbsp; 🟢 코드가 결정론적으로 하는 일
 
 ### 7.2 AI·Rule 설계
 
@@ -499,7 +570,11 @@ flowchart LR
 | `UNSATISFIED` | 현재 회사 정보로 요건 미충족을 확인 |
 | `UNKNOWN` | 현재 정보만으로 확정할 수 없음 |
 
-**`UNKNOWN` ≠ `ASKABLE`** — `UNKNOWN`이 곧 사용자 질문 대상이라는 뜻은 아닙니다. 단일 사용자 사실로 안전하게 해소할 수 있는 요건만 `ASKABLE`로 분류합니다.
+`UNKNOWN`이 곧 사용자 질문 대상이라는 뜻은 아닙니다. 단일 사용자 사실로 안전하게 해소할 수 있는 요건만 `ASKABLE`로 분류합니다.
+
+```text
+UNKNOWN ≠ ASKABLE
+```
 
 판정에는 Requirement, 회사 정보 또는 사용자 답변, 원문 Evidence와 버전 정보를 함께 남깁니다. 생성된 설명 자체가 아니라 공고 원문의 문서·페이지·문단 위치를 근거로 사용합니다.
 
@@ -507,13 +582,18 @@ flowchart LR
 
 ### 7.3 변경공고 재검증
 
-```mermaid
-flowchart LR
-    A["기준 공고<br/>분석·판정"] --> B["변경공고<br/>수집·버전 생성"]
-    B --> C["Canonical<br/>Requirement Diff"]
-    C --> D["ADDED / MODIFIED<br/>/ REMOVED 식별"]
-    D --> E["영향받은 현재<br/>Requirement만 재판정"]
-    E --> F["변경 전·후 결과와<br/>Evidence 비교"]
+```text
+기준 공고 분석·판정
+        ↓
+변경공고 수집·버전 생성
+        ↓
+Canonical Requirement Diff
+        ↓
+ADDED / MODIFIED / REMOVED 식별
+        ↓
+영향받은 현재 Requirement만 재판정
+        ↓
+변경 전·후 결과와 Evidence 비교
 ```
 
 코드 경로와 합성 회귀 테스트는 구현되어 있습니다. 변경되지 않은 요건은 기존 판정을 승계하고, 추가·수정된 요건만 현재 회사 프로필로 다시 판정합니다. 기준 판정 이후 회사 프로필이나 판정 기준일이 바뀌었다면 부분 재검증을 중단하고 전체 재판정을 요구합니다.
@@ -604,22 +684,22 @@ bid-change-validator/
 
 저장소 루트의 `.env.example`을 `.env`로 복사한 뒤 환경변수를 설정합니다.
 
-```bash
-cp .env.example .env          # PowerShell: Copy-Item .env.example .env
+```powershell
+Copy-Item .env.example .env
 docker compose up -d --build api
 ```
 
 API 시작 전에 Alembic migration이 자동 적용됩니다. 변경공고 수집기를 함께 실행하려면 다음 명령을 사용합니다.
 
-```bash
+```powershell
 docker compose --profile collector up -d --build api notice-poller
 ```
 
 ### Frontend
 
-```bash
+```powershell
 cd apps/web
-cp .env.example .env.local    # PowerShell: Copy-Item .env.example .env.local
+Copy-Item .env.example .env.local
 pnpm install
 pnpm dev
 ```
@@ -637,7 +717,7 @@ OpenAI API Key가 없으면 자격요건 분석과 Document RAG처럼 외부 모
 
 정적 파일만 서빙하면 화면 이동이 동작하지 않습니다 — RSC 응답을 서버가 만들어야 합니다.
 
-```bash
+```powershell
 pnpm build
 pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 ```
@@ -652,7 +732,6 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 > 배포 자동화는 아직 없습니다. compose·워크플로 정리는 후속 작업입니다.
 
 ---
-
 ## ✅ 8. 수행결과 (테스트 및 시연 페이지)
 
 ### 8.1 서비스 화면
@@ -663,11 +742,11 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 | 참가자격 검토 | `/qualification` | Analysis → Judgment와 요건·근거 확인 |
 | 확인 필요 | `/ask-back` | `ASKABLE UNKNOWN` 답변과 부분 재판정 |
 | 근거 원문 | `/evidence` | Requirement·판정·원문 Evidence 연결 |
-| 평가 대응 | `/evaluation` | 참가자격 기반 참고 정보 제공 · 평가 전용 추출과 점수 예측은 미지원 |
+| 평가 대응 | `/evaluation` | 참가자격 기반 참고 정보 제공; 평가 전용 추출·점수 예측 미지원 |
 | 변경 이력 | `/changes` | 버전·Requirement Diff와 재검증 결과 |
-| 회사 프로필 | `/company` | 회사 정보·업종·실적·인증/등록 관리 |
+| 회사 프로필 | `/company` | 회사 정보·실적·인증/등록 관리 |
 
-제품 화면 7종의 이동과 주요 API 연결은 구현되어 있습니다. 실제 G2와 안전한 Ask-back 답변을 포함한 전체 Human Click E2E는 최종 검증 대기 상태입니다.
+7개 Route의 이동과 주요 API 연결은 구현되어 있습니다. 실제 G2와 안전한 Ask-back 답변을 포함한 전체 Human Click E2E는 최종 검증 대기 상태입니다.
 
 > 🚧 **화면 캡처 5장 작성 예정** — 사용 흐름 순서대로
 >
@@ -687,4 +766,133 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 | 항목 | 규모·상태 |
 | --- | ---: |
 | 고유 공고 | 20건 |
-| 합성 회사
+| 합성 회사 프로필 | 32세트 |
+| 이전 차수 입력 | 8건 |
+| 전체 판정 입력 | 40건 / 138개 요건 행 |
+| 검수 상태 | `DRAFT_NOT_APPROVED` |
+
+이 Fixture는 Canonical Requirement를 Rule Engine에 직접 입력하여 판정 회귀를 확인합니다. 따라서 Requirement Extraction 성능이나 승인된 최종 Ground Truth를 의미하지 않습니다.
+
+| 측정 시점 | 초안 기대값 일치 | 안전한 보류 | 잘못된 확정 판정 | 공고 단위 상태 일치 |
+| --- | ---: | ---: | ---: | ---: |
+| E0 초기 기준선 | 104/138 | 34/138 | 0건 | 36/40 |
+| 2026-09-13 회귀 결과 | 110/138 | 28/138 | 0건 | 37/40 |
+
+E0는 고정 초기 기준선이며, 2026-09-13 결과는 안전성 보완 이후의 최신 회귀 스냅샷입니다. 두 결과 모두 승인 전 `DRAFT` Fixture에 Canonical Requirement를 직접 입력한 Rule 회귀 지표로, Requirement Extraction·LLM·서비스 전체 정확도를 의미하지 않습니다.
+
+**평가 레이어**
+
+| 평가 레이어 | 현재 확인 범위 | 상태 |
+| --- | --- | --- |
+| Rule / Judgment | 기대값 일치, safe abstention, wrong determinate | 회귀 기준선 운영 |
+| Requirement Extraction | 합성 selection harness와 실제 snapshot 확보 | 최종 실공고 라벨·F1 미확정 |
+| Document RAG | Recall@4, Citation 구조·버전 무결성 | 정량 평가 수행, 의미 정답률 별도 검수 필요 |
+| AI Copilot | Routing 및 시나리오 계약 평가 | 사용자 Task 평가 대기 |
+| 변경공고 G2 | 실제 변경 후보와 원문 Diff | Human Validation 진행 중 |
+| User E2E | 화면 Route와 일부 흐름 | 전체 성공 시나리오 검증 대기 |
+
+Document RAG 평가에서는 기본 Hybrid Retrieval의 Evidence Recall@4 50.00%를 기록했습니다. LLM rerank는 55.56%였지만 지연과 호출 비용이 커 기본 경로에는 적용하지 않았습니다. Expected Evidence Citation Recall 45.83%와 Citation Version Integrity 100%는 구조 지표이며 답변 정답률로 해석하지 않습니다.
+
+상세 근거:
+
+- [Golden Fixture v0.2](https://github.com/gyuniverse-hq/bid-change-validator/tree/develop/samples/golden/qualification-v0.2)
+- [실공고 Snapshot Dataset](https://github.com/gyuniverse-hq/bid-change-validator/tree/develop/samples/golden/qualification-real-v0.1)
+- [Document RAG Evaluation](https://github.com/gyuniverse-hq/bid-change-validator/blob/develop/docs/08_qa_reports/ai-copilot-v2/e3-rag-evaluation.md)
+
+> 🚧 **최종 측정값 확정 후 갱신** — Backend 테스트 통과 수 · 최신 Golden 회귀 결과 · 기준 커밋 SHA · 측정 일자
+
+### 8.4 프로젝트 결과
+
+- 공고 원문에서 참가자격 Requirement와 Evidence를 구조화하고 회사 프로필과 연결했습니다.
+- 변경 전·후 Requirement Diff를 기반으로 영향 요건만 식별하여 재검증하는 흐름을 구현했습니다.
+- 부족한 정보는 추정하지 않고 Ask-back 또는 안전한 보류로 처리하는 판정 기준을 마련했습니다.
+- Golden Fixture 회귀에서 잘못된 확정 판정 0건을 유지하면서 초안 기대값 일치를 104/138에서 110/138로 개선했습니다.
+- 판정·근거·확인 필요 항목·변경 내역을 현재 검토 건 중심으로 조회하는 AI Copilot을 연결했습니다.
+
+실공고 Ground Truth, 사용자 Task 평가, 전체 Human Click E2E는 아직 진행 중이며 완료된 성과와 구분합니다.
+
+---
+
+## 🔑 트러블슈팅
+
+| 문제 | 원인 | 해결 |
+| --- | --- | --- |
+| 공고의 참가자격 요건이 판정기까지 하나도 도달하지 않음 | 청크 선별기가 `3. 입찰참가자격` 아래 `가./나./다.`를 다음 상위 제목으로 판단해 LLM에 보내지 않음 | 숫자·한글·괄호형 제목의 위계를 분리해 자격 절 하위 항목이 함께 전달되도록 수정 |
+| 행정통합 지역에서 자격 있는 회사를 「미달」로 확정 | 지역 판정이 글자 비교라 「전남광주통합특별시」와 「종전 광주광역시」의 포함 관계를 모름 | 하위→상위 표를 두고, 프로필이 상위 단위라 가를 수 없으면 미달이 아니라 「확인 필요」로 넘김 |
+| 같은 표현인데 근거 검증 실패 | 원문의 `수집․운반업`과 추출 결과의 `수집·운반업`이 가운데점 문자가 다름 | 비교할 때만 NFKC와 가운데점 변형을 정규화. 저장되는 원문은 바꾸지 않음 |
+| 같은 버전에 분석이 밀리초 단위로 두 번 생성 | 기준 차수와 현재 차수가 같은 검토 건에서 화면이 두 분석을 병렬 실행해 동일 API를 동시에 두 번 호출 | 기준 ≥ 현재인 검토 건 생성을 백엔드에서 차단하고, 동일 버전은 한 번만 분석하도록 방어 |
+| 이동 버튼을 눌러도 서버 요청이 발생하지 않음 | `Link`/`a` 안에 `Button`을 중첩한 구조. `a` 안의 `button`은 HTML에서 무효라 클릭이 삼켜짐 | Base UI Button의 `render` prop으로 감싸 실제 렌더가 단일 `a` 요소가 되게 수정 (11곳) |
+| **같은 문서·같은 청크인데 추출 결과가 실행마다 다름** | 문서 해시·청크 목록이 모두 동일한데 구조화 요건 수가 `3·1·3·3`처럼 흔들림. 복합조건 처리와 관련된 것으로 보임 | **진행 중.** 조건을 하나 바꾸면 다른 쪽이 깨지는 구조라 원인 분리 중 |
+
+---
+
+## 📈 현재 구현 상태와 한계
+
+| 영역 | 코드·연결 상태 | 최종 검증 상태 |
+| --- | --- | --- |
+| 나라장터 공고·변경공고 수집 | 구현 | 운영 범위 확대 검증 필요 |
+| 공고 Version·첨부문서 관리 | 구현 | 실데이터 검산 진행 |
+| PDF/HWP/HWPX Parsing | 구현 | 문서 유형별 품질 개선 필요 |
+| Requirement Extraction | 구현 | 실공고 정답 라벨·F1 미확정 |
+| Company Profile Matching | 구현 | 전체 사용자 E2E 추가 검증 |
+| Deterministic Rule Judgment | 구현·Golden 회귀 운영 | Fixture 독립 승인 대기 |
+| Ask-back | 구현·회귀 확인 | 실공고 safe-answer E2E 대기 |
+| Evidence 연결 | 구현 | 의미 단위 정확도 검수 진행 |
+| Requirement Diff·재검증 | 구현·합성 회귀 통과 | 실제 G2 Human Validation 진행 |
+| AI Copilot | 현재 Case 중심 조회·확인형 Action 구현 | 사용자 Task 평가 대기 |
+| 7개 제품 화면 | Route와 주요 API 연결 | 전체 Human Click E2E 대기 |
+| 배포 | vinext + nginx 구성 운영 중 | 배포 자동화 미확정 |
+
+### 현재 한계
+
+- Golden Fixture의 기대값은 독립 검수자 승인 전 초안입니다.
+- 실제 변경공고 G2는 후보를 확보했지만 Ground Truth 확정 전입니다.
+- Requirement Extraction, Copilot, 사용자 E2E의 최종 성능 수치는 아직 확정하지 않았습니다.
+- 동일 입력에서 Requirement 추출 결과가 실행마다 달라지는 문제를 확인했고 개선 진행 중입니다.
+- Document RAG는 현재 공고 버전 범위에서 동작하며 cross-version QA는 지원하지 않습니다.
+- 평가 대응 화면은 참가자격 기반 참고 정보이며 평가항목 전용 추출이나 점수 예측 기능이 아닙니다.
+- 외부 운영 배포 완료를 주장하지 않습니다.
+
+### 다음 개선
+
+- 추출 결정성 확보 — 같은 입력에서 같은 Requirement가 나오도록
+- 실제 공고 Requirement·Evidence 라벨 독립 검수와 Extraction 평가
+- 변경공고 G2 Ground Truth 확정 및 전체 재검증 E2E
+- Copilot 사용자 Task 평가와 문서 QA 품질 개선
+- 대표 UI, 최종 아키텍처, 배포 결과 확정 후 README 반영
+
+---
+
+## 💬 9. 한 줄 회고
+
+> 🚧 **제출 직전에 각자 작성** — 1인 1문단
+
+**김재현**
+예상했던 것보다 구현의 난이도가 높았다. 
+모델의 성능을 너무 믿고 분석 자체는 쉬운 과제일 거라고 생각했는데 문맥을 이해하지 못하는 경우가 많아 실제 서비스에서는 LLM 호출보다 코드 비중이 높아진 점이 매우 아쉽다.
+또한 사람에게는 단순한 선별 문제인데도 컴퓨터가 판별할 수 있는 단위로 쪼개는 작업에서 저마다 다른 형식으로 작성된 문서를 일관되게 처리하지 못하는 한계로 발생한 오류들이 많았으며, 이 부분에 대한 사전 이해도를 먼저 갖추고 작업에 임했더라면 시행착오가 줄었을 것으로 판단되어 아쉬움으로 남는다.
+또한 파인 튜닝 등의 성능 향상 작업도 계획하였으나 구현하지 못하여 아쉬웠으며, 당초 계획했던 로컬 모델 적용과 api모델과의 성능 비교를 진행하지 못한 점, 회사 프로필을 공고와 대조하여 사업계획서의 초안을 작성해주는 기능은 일단 구현에는 성공하였으나 미흡한 성능, 팀의 일정 상 추가하지 못한 점 역시도 아쉬웠다. 
+
+**이홍규**
+이번 프로젝트를 진행하며 가장 크게 느낀 점은 협업에서 소통이 생각보다 훨씬 중요하다는 것이었다. 각자 맡은 기능을 잘 구현하는 것도 중요하지만, 진행상황이나 변경사항, 막힌 부분이 제때 공유되지 않으면 다른 파트의 작업과 전체 일정에도 영향을 줄 수 있다는 것을 여러 번 경험했다. 또한 Frontend, Backend, DB, LLM/RAG가 서로 연결되는 과정에서도 각자가 같은 기준과 맥락을 이해하고 있는지가 중요하다는 점을 느꼈다. AI와 다양한 협업 도구를 활용하면서도 결국 도구보다 중요한 것은 필요한 정보를 서로 정확하게 공유하고 이해하는 과정이라는 생각이 들었다. 앞으로는 내 역할을 잘 수행하는 것뿐 아니라, 함께 일하는 사람들이 같은 상황을 이해하고 움직일 수 있도록 소통하는 방식도 중요하게 가져가고 싶다.
+
+**전진환**
+
+**정예린**
+DB/Data 파트를 맡으며 가장 크게 느낀건, "데이터가 있어 보이는 것"과 "실제로 맞는 데이터"는 다르고 이 차이를 매 단계 검증하지않으면 그 오차가 그대로 판정결과까지 흘러간다는점이었다. 골든셋 20건 중 우치공원공고를 검수하다가, 팀 DB엔 버전이 4개뿐인데 실제 나라장터엔 변경/취소가 더 있었다는 걸 발견했다. 원본 PDF와 수집로그를 직접 대조해서 "새 공고를 뒤늦게 발견하면 과거 이력을 안훑는" 구조적 사각지대를 찾아냈고, 이걸 고쳐서 팀이 쓰는 골든셋 기준 자체의 신뢰도를 한 단계 올릴 수 있었다.
+이 경험 이후로 확인된 내용도 한번 더 검증하는 방식으로 작업했는데, 실제로 공용 Supabase 커넥션 풀 제한으로 팀원 작업이 멈췄던 일을 겪으면서 데이터 이슈 하나가 나 혼자의 문제가 아니라 팀 전체 진행속도에 직결된다는 걸 체감했다.
+
+**황수빈**
+
+---
+
+## 📄 참고 자료
+
+실제 구현과 검증 근거는 개발 저장소에 있습니다.
+
+- [개발 저장소 `gyuniverse-hq/bid-change-validator`](https://github.com/gyuniverse-hq/bid-change-validator)
+- [Product Baseline 문서](https://github.com/gyuniverse-hq/bid-change-validator/tree/develop/docs/mvp-baseline)
+- [QA · Evaluation 문서](https://github.com/gyuniverse-hq/bid-change-validator/tree/develop/docs/08_qa_reports)
+- [DB ERD](https://github.com/gyuniverse-hq/bid-change-validator/blob/develop/docs/04_contracts/db-erd-current.md)
+
+---
