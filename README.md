@@ -88,7 +88,10 @@
 
 ## 👥 1. 팀 소개
 
-**팀명** SKN34 3차 4팀
+**팀명** 사고치지마
+<p align="center">
+  <img src="./docs/assets/team_image.png" alt="Team 4 - BidCheck" width="100%" />
+</p>
 
 | 팀원 | 김재현 | 이홍규 | 전진환 | 정예린 | 황수빈 |
 | --- | --- | --- | --- | --- | --- |
