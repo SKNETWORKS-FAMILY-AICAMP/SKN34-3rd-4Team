@@ -77,7 +77,7 @@
 | 안전한 보류 | 28 / 138 |
 | 공고 단위 상태 일치 | **37 / 40** |
 | 근거 인용 버전 무결성 | **100%** |
-| DB 규모 | 도메인 테이블 **30개** + 코드표 4개 · 마이그레이션 022 |
+| DB 규모 | 도메인 테이블 **30개** + 코드표 4개 · 마이그레이션 024 |
 | 요구사항 | 비기능 11건 · 기능 **70건**(8영역) |
 | 제품 화면 | **7종** |
 
@@ -367,7 +367,7 @@ flowchart TD
 
 ## 🗂️ 6. ERD
 
-도메인 테이블 **30개** + 코드표 4개. 라이브 DB 스키마와 직접 대조해 만들었고 마이그레이션 022까지 반영돼 있습니다.
+도메인 테이블 **30개** + 코드표 4개. 라이브 DB 스키마와 직접 대조해 만들었고 마이그레이션 024까지 반영돼 있습니다.
 
 ### 도메인 지도
 
@@ -445,6 +445,122 @@ erDiagram
 
 ### 7.1 시스템 아키텍처
 
+비드체크는 운영 환경과 로컬 개발 환경에서 동일한 Frontend·Backend 코드와 핵심 처리 흐름을 사용합니다. 운영 환경에서는 Nginx를 HTTPS 진입점으로 사용하고, 데이터베이스와 문서 저장소는 환경에 맞게 구성했습니다.
+
+#### 7.1.1 실제 배포 환경
+
+실제 서비스는 OCI Compute에서 Frontend, Backend API, 공고 수집기를 운영합니다. 사용자의 HTTPS 요청은 Nginx가 화면·RSC 요청과 API 요청으로 분기합니다.
+
+공고 정보, 추출 텍스트, 분석 및 판정 결과 등 구조화 데이터는 Supabase PostgreSQL에 저장하고, 수집된 첨부파일 원본은 OCI Object Storage에 저장합니다.
+
+```mermaid
+flowchart LR
+    USER[사용자 브라우저]
+    G2B[나라장터 Open API]
+    OPENAI[OpenAI API]
+
+    subgraph OCI[OCI Compute]
+        NGINX[Nginx<br/>HTTPS · Reverse Proxy]
+        WEB[Frontend<br/>Vinext Production Server]
+        POLLER[공고 수집기<br/>Notice Poller]
+
+        subgraph BACKEND[Backend · FastAPI]
+            PARSER[문서 Parsing]
+            EXTRACTION[참가자격 분석<br/>Section/Keyword · LLM]
+            RULE[Rule Engine]
+            COPILOT[Copilot 문서 검색<br/>FAISS/Hybrid]
+        end
+    end
+
+    DB[(Supabase PostgreSQL)]
+    STORAGE[(OCI Object Storage<br/>첨부파일 원본)]
+
+    USER -->|HTTPS| NGINX
+    NGINX -->|화면 · RSC| WEB
+    NGINX -->|/api/*| BACKEND
+
+    POLLER -->|공고 · 변경 차수 조회| G2B
+    POLLER --> DB
+    POLLER --> STORAGE
+
+    BACKEND --> DB
+    BACKEND --> STORAGE
+
+    PARSER --> EXTRACTION
+    EXTRACTION --> RULE
+    EXTRACTION --> OPENAI
+    COPILOT --> OPENAI
+```
+
+운영 환경의 주요 처리 흐름은 다음과 같습니다.
+
+1. Notice Poller가 나라장터 Open API에서 공고, 변경 차수, 첨부문서를 수집합니다.
+2. 공고 정보와 추출 텍스트는 Supabase PostgreSQL에 저장하고, 첨부파일 원본은 OCI Object Storage에 저장합니다.
+3. Backend가 첨부문서를 Parsing하고, Section/Keyword 기반 후보 선택과 LLM을 통해 참가자격 Requirement와 Evidence를 구조화합니다.
+4. Rule Engine이 구조화된 Requirement와 회사 프로필을 비교하여 결정론적으로 판정합니다.
+5. Copilot의 공고문 질의 기능은 준비된 FAISS/Hybrid 검색 경로를 이용해 관련 원문 근거를 조회합니다.
+6. Frontend는 판정 결과, 원문 근거와 변경공고 재검증 결과를 제공합니다.
+
+#### 7.1.2 로컬 개발 환경
+
+로컬 개발 환경에서도 운영 환경과 동일한 Frontend·Backend 코드와 핵심 처리 흐름을 사용합니다.
+
+Frontend는 Vinext 개발 서버로 실행하고, Backend API, PostgreSQL, Notice Poller는 Docker Compose로 실행합니다. 운영 환경의 OCI Object Storage 대신 로컬 Docker Volume에 첨부파일 원본을 저장합니다.
+
+```mermaid
+flowchart LR
+    USER[개발자 브라우저]
+    G2B[나라장터 Open API]
+    OPENAI[OpenAI API]
+
+    subgraph LOCAL[Local Development PC]
+        WEB[Frontend<br/>Vinext Dev Server :3000]
+
+        subgraph DOCKER[Docker Compose]
+            POLLER[공고 수집기<br/>Notice Poller]
+            DB[(PostgreSQL)]
+            STORAGE[(Docker Volume<br/>첨부파일 원본)]
+
+            subgraph BACKEND[Backend · FastAPI :8000]
+                PARSER[문서 Parsing]
+                EXTRACTION[참가자격 분석<br/>Section/Keyword · LLM]
+                RULE[Rule Engine]
+                COPILOT[Copilot 문서 검색<br/>FAISS/Hybrid]
+            end
+        end
+    end
+
+    USER --> WEB
+    WEB -->|API 요청| BACKEND
+
+    POLLER -->|공고 · 변경 차수 조회| G2B
+    POLLER --> DB
+    POLLER --> STORAGE
+
+    BACKEND --> DB
+    BACKEND --> STORAGE
+
+    PARSER --> EXTRACTION
+    EXTRACTION --> RULE
+    EXTRACTION --> OPENAI
+    COPILOT --> OPENAI
+```
+
+로컬 환경의 주요 처리 흐름은 다음과 같습니다.
+
+1. Notice Poller가 나라장터에서 공고, 변경 차수, 첨부문서를 수집합니다.
+2. 공고 정보와 추출 텍스트는 로컬 PostgreSQL에 저장합니다.
+3. 첨부파일 원본은 로컬 Docker Volume에 저장합니다.
+4. Backend가 첨부문서를 Parsing하고 참가자격 요건과 근거를 구조화합니다.
+5. Rule Engine이 구조화된 요건과 회사 프로필을 비교하여 판정합니다.
+6. Frontend에서 판정 결과, 원문 근거, Ask-back 및 변경공고 재검증 결과를 확인합니다.
+
+운영 환경과 로컬 개발 환경은 동일한 애플리케이션 코드와 판정 흐름을 사용합니다. 운영 환경에서는 데이터베이스와 문서 저장소를 각각 Supabase PostgreSQL과 OCI Object Storage로 분리하고, 로컬 환경에서는 Docker Compose의 PostgreSQL과 Docker Volume을 사용합니다.
+
+### 7.2 AI·Rule 설계
+
+어디까지가 LLM이고 어디부터가 코드인지를 한 장으로 보면 다음과 같습니다. **노란 테두리가 LLM이 하는 일, 초록 테두리가 코드가 결정론적으로 하는 일입니다.**
+
 ```mermaid
 flowchart LR
     subgraph collect["① 수집"]
@@ -493,8 +609,6 @@ flowchart LR
 ```
 
 🟡 노란 테두리 — LLM이 하는 일 &nbsp;·&nbsp; 🟢 초록 테두리 — 코드가 결정론적으로 하는 일
-
-### 7.2 AI·Rule 설계
 
 | 영역 | 실제 담당 |
 | --- | --- |
@@ -604,7 +718,7 @@ bid-change-validator/
 bid-change-validator/
 ├── apps/
 │   ├── api/                      # FastAPI 백엔드
-│   │   ├── alembic/versions/     # 마이그레이션 001~022
+│   │   ├── alembic/versions/     # 마이그레이션 001~024
 │   │   ├── app/
 │   │   │   ├── ai/               # LLM 추출 · 계약조항 검토 · 품질 평가
 │   │   │   ├── copilot/          # AI Copilot (의도 분류 · 도구 · 답변)
@@ -757,6 +871,26 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 
 ### 8.3 데이터 및 Evaluation
 
+**실제 수집 데이터**
+
+| 항목 | 규모 |
+| --- | ---: |
+| 공고 | 1,132건 |
+| 차수 | 1,265건 |
+| 첨부문서 | 4,826건 |
+
+차수가 공고보다 많은 것은 정정·변경공고가 실제로 발생했기 때문입니다(공고당 평균 1.12차수). 이 프로젝트가 다루는 「변경공고 대응」 상황이 합성이 아니라 실데이터에 존재한다는 뜻입니다.
+
+정기 수집 대상은 **용역 · 물품 · 공사 · 외자** 4개 유형이며, 기타(OTHER)는 응답 구조가 일정하지 않아 기본 폴링 범위에서 제외했습니다.
+
+| 첨부문서 텍스트 추출 | 건수 | 비율 |
+| --- | ---: | ---: |
+| 성공 | 4,529 | 93.8% |
+| 미지원 포맷 | 220 | 4.6% |
+| 실패 | 42 | 0.9% |
+| 빈 문서 | 29 | 0.6% |
+| 대기 | 6 | 0.1% |
+
 **Rule 회귀용 Golden Fixture v0.2**
 
 | 항목 | 규모·상태 |
@@ -773,7 +907,7 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 | --- | ---: | ---: | ---: | ---: | --- |
 | E0 초기 기준선 | 104/138 (75.4%) | 34/138 (24.6%) | 0건 | 36/40 (90.0%) | 안전성 보완 전 고정 기준선 |
 | 2026-09-13 회귀 | 110/138 (79.7%) | 28/138 (20.3%) | 0건 | 37/40 (92.5%) | 보류 6건을 확정으로 옮기면서 오판 0건 유지 |
-| 2026-09-15 재확인 | 110/138 (79.7%) | 28/138 (20.3%) | 0건 | 37/40 (92.5%) | 업종 마스터 수정 후 재측정 · Golden gate 통과 |
+| 2026-09-16 재확인 | 110/138 (79.7%) | 28/138 (20.3%) | 0건 | 37/40 (92.5%) | 업종 마스터 14건 수정 후 재확인 · 변동 없음 · Golden gate 통과 |
 
 **최신 측정 근거**
 
@@ -785,6 +919,7 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 | 게이트 | Golden gate 통과 |
 
 > 이 회귀는 DB의 업종 마스터를 조회하지 않고 frozen canonical requirement를 판정기에 직접 입력합니다.
+> 그래서 9/15의 업종 마스터 14건 수정은 이 수치를 움직이지 않습니다. 마스터 수정이 바꾸는 것은 라이브 판정입니다.
 > 그래서 9/15에 고친 업종 마스터 명칭 14건은 위 숫자를 움직이지 않습니다. 마스터 수정의 실제 효과는
 > 마스터를 조회하는 제품 추출 경로에서 live recall을 따로 재야 확인됩니다.
 
@@ -824,7 +959,16 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 - [실공고 Snapshot Dataset](https://github.com/gyuniverse-hq/bid-change-validator/tree/develop/samples/golden/qualification-real-v0.1)
 - [Document RAG Evaluation](https://github.com/gyuniverse-hq/bid-change-validator/blob/develop/docs/08_qa_reports/ai-copilot-v2/e3-rag-evaluation.md)
 
-> 🚧 **Backend 전체 테스트 통과 수 확정 대기** — 로컬은 격리 PostgreSQL을 준비하지 못해 재실행하지 않았습니다.
+**Backend 테스트**
+
+| 항목 | 값 |
+| --- | --- |
+| 전체 통과 | **905 passed · 0 failed** (`apps/api/tests` 전체, deselect 없음) |
+| 기준 커밋 | `5f2a73eaa5b225385d3795133c12fffdae7e25b3` |
+| 측정 일자 | 2026-09-16 |
+| 실행 환경 | Python 3.14 로컬 (`PYTHONIOENCODING=utf-8`) |
+
+> 로컬 실행 기준입니다. CI(Linux)는 환경 차이로 통과 수가 몇 건 다를 수 있습니다.
 > PR CI 결과로 구분해 기록할 예정입니다.
 
 ### 8.4 프로젝트 결과
