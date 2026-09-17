@@ -122,7 +122,7 @@
 | 도구 | 활용 방식 |
 | --- | --- |
 | **GitHub** | `Issue → Branch → Pull Request → Review / Test → Merge` 흐름을 기준으로 개발하고, 파트 간 변경 영향과 통합 상태를 함께 확인 |
-| **GitHub Projects** | Issue를 `Status`, `Priority`, `Iteration` 등으로 구조화하여 프로젝트 단위의 작업 상태와 우선순위를 관리 |
+| **GitHub Projects** | Issue를 Status, Priority, Iteration 등으로 구조화하고, MCP 기반 조회를 통해 프로젝트 상태와 작업 우선순위를 관리 |
 | **Discord** | 파트별 논의, 작업현황, Blocker, Merge 요청 및 주요 결정사항을 공유하는 실시간 협업 공간으로 활용 |
 | **Discord MCP** | 누적된 팀 대화를 AI가 검색·요약할 수 있도록 연결하여 진행상황, Blocker, 파트 간 요청사항과 이전 논의 맥락을 Team Context로 활용 |
 | **Notion** | 프로젝트 기획, 기능 설계, Golden Set, 평가 기준 등 팀이 반복적으로 참고하는 문서를 정리 |
