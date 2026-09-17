@@ -79,7 +79,7 @@
 | 근거 인용 버전 무결성 | **100%** |
 | DB 규모 | 도메인 테이블 **30개** + 코드표 4개 · 마이그레이션 024 |
 | 요구사항 | 비기능 11건 · 기능 **70건**(8영역) |
-| 제품 화면 | **7종** |
+| 제품 화면 | **8종** |
 
 > 위 수치는 승인 전 `DRAFT` Golden Fixture에 Canonical Requirement를 직접 입력한 **Rule 회귀 지표**입니다.
 > Requirement Extraction 성능이나 서비스 전체 정확도가 아닙니다. 공고 20건 · 요건 138행 기준입니다.
@@ -322,7 +322,7 @@ flowchart TD
 | --- | --- | --- |
 | 1. 기획 | 09-01 ~ 09-03 | 주제 확정 · 요구사항 명세서 · 팀 운영 규칙 |
 | 2. 설계 | 09-04 ~ 09-08 | 화면설계서 · DB 스키마 v2 · API 명세 · 추출 계약 |
-| 3. 구현 | 09-08 ~ 09-14 | 수집 · 추출 · 판정 엔진 · 화면 7종 · 인증 · Copilot |
+| 3. 구현 | 09-08 ~ 09-14 | 수집 · 추출 · 판정 엔진 · 화면 8종 · 인증 · Copilot |
 | 4. 검증 | 09-11 ~ 09-16 | Golden Fixture v0.2 · Flow QA · 실공고 E2E |
 | 5. 제출 | 09-15 ~ 09-17 | 최종 수정 · 캡처 · 측정 · README · 발표 |
 
@@ -346,7 +346,7 @@ flowchart TD
 | | 자격요건 추출기 · 가드레일 | LLM·RAG | 09-08 ~ 09-12 | Analysis Run |
 | | 판정 엔진 (결정론적 Rule) | Backend | 09-09 ~ 09-12 | Judgment Run · 판정 규칙 v0.2 → v0.3 |
 | | 공용 DB 구축 · 마이그레이션 006~022 | DB | 09-09 ~ 09-14 | 분석 · 판정 · Ask-back · 재검증 · 계약조항 · 인증 |
-| | 제품 화면 7종 구현 | Frontend | 09-09 ~ 09-14 | 공고 찾기 ~ 회사 프로필 |
+| | 제품 화면 8종 구현 | Frontend | 09-09 ~ 09-14 | 공고 찾기 ~ 회사 프로필 · 이용안내 |
 | | 로그인 · 세션 인증 · 회사별 권한 | Backend · DB | 09-11 ~ 09-13 | app_users · auth_sessions |
 | | 계약조항 검토 9종 | Backend · LLM·RAG | 09-11 ~ 09-13 | contract_clause_findings |
 | | AI Copilot | LLM·RAG · 통합 | 09-12 ~ 09-14 | Copilot v3 |
@@ -817,7 +817,7 @@ AI Copilot은 현재 검토 건을 중심으로 판정·근거·확인 필요 �
 ```
 bid-change-validator/
 ├── apps/api/     # FastAPI — 수집 · 추출 · 판정 · Copilot · 문서 RAG
-├── apps/web/     # vinext(Vite + RSC) — 제품 화면 7종
+├── apps/web/     # vinext(Vite + RSC) — 제품 화면 8종
 ├── services/     # 문서 파싱
 ├── db/ data/     # 시드 · 마스터 코드
 ├── contracts/    # 파트 간 계약
@@ -936,7 +936,7 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 
 ### 8.1 화면 흐름 (UX Flow)
 
-제품 화면 8종이 실제로 이어지는 순서입니다. **한 번 판정하고 끝나는 직선이 아니라, 확인 필요와 변경 이력에서 판정 화면으로 되돌아옵니다.**
+로그인으로 들어와 제품 화면 8종이 이어지는 순서입니다. **한 번 판정하고 끝나는 직선이 아니라, 확인 필요와 변경 이력에서 판정 화면으로 되돌아옵니다.**
 
 ```mermaid
 flowchart TB
@@ -1001,7 +1001,7 @@ flowchart TB
 | 회사 프로필 | `/company` | 회사 정보·업종·실적·인증/등록 관리 |
 | 이용안내 | `/guide` | 처음 쓰는 사용자를 위한 3단계 흐름과 화면별 안내 |
 
-제품 화면 7종과 이용안내의 이동, 주요 API 연결은 구현되어 있습니다. 실제 G2와 안전한 Ask-back 답변을 포함한 전체 Human Click E2E는 최종 검증 대기 상태입니다.
+제품 화면 8종의 이동과 주요 API 연결은 구현되어 있습니다. 실제 G2와 안전한 Ask-back 답변을 포함한 전체 Human Click E2E는 최종 검증 대기 상태입니다.
 
 제품에 처음 들어오면 **이용안내**가 먼저 보입니다. 3단계 흐름과 화면별로 하는 일, 그리고 「이 서비스가 하지 않는 것」을 제품 안에서도 같은 문장으로 적어 두었습니다.
 
@@ -1277,7 +1277,7 @@ flowchart TB
 | Evidence 연결 | 구현 | 의미 단위 정확도 검수 진행 |
 | Requirement Diff·재검증 | 구현·합성 회귀 통과 | 실제 G2 Human Validation 진행 |
 | AI Copilot | 현재 Case 중심 조회·확인형 Action 구현 | 사용자 Task 평가 대기 |
-| 제품 화면 7종 | Route와 주요 API 연결 | 전체 Human Click E2E 대기 |
+| 제품 화면 8종 | Route와 주요 API 연결 | 전체 Human Click E2E 대기 |
 | 배포 | vinext + nginx 구성 운영 중 | 배포 자동화 미확정 |
 
 ### 현재 한계
