@@ -269,8 +269,44 @@ flowchart TD
 
 ## 🛠️ 3. 기술 스택
 
-| 영역 | 기술 |
-| --- | --- |
+**Frontend**
+
+![React 19](https://img.shields.io/badge/React%2019-61DAFB?style=for-the-badge&logoColor=black&logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logoColor=white&logo=typescript) ![Vinext](https://img.shields.io/badge/Vinext-0B0B0F?style=for-the-badge&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logoColor=white&logo=vite) ![Tailwind CSS 4](https://img.shields.io/badge/Tailwind%20CSS%204-06B6D4?style=for-the-badge&logoColor=white&logo=tailwindcss) ![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-000000?style=for-the-badge&logoColor=white&logo=shadcnui) ![Base UI](https://img.shields.io/badge/Base%20UI-1F2937?style=for-the-badge&logoColor=white) ![@rhwp/core](https://img.shields.io/badge/@rhwp%2Fcore-4B5563?style=for-the-badge&logoColor=white)
+
+**Backend · API**
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logoColor=white&logo=python) ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logoColor=white&logo=fastapi) ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-D71F00?style=for-the-badge&logoColor=white&logo=sqlalchemy) ![Uvicorn](https://img.shields.io/badge/Uvicorn-499848?style=for-the-badge&logoColor=white)
+
+**AI · RAG**
+
+![OpenAI API](https://img.shields.io/badge/OpenAI%20API-412991?style=for-the-badge&logoColor=white&logo=openai) ![LangChain Core](https://img.shields.io/badge/LangChain%20Core-1C3C3C?style=for-the-badge&logoColor=white&logo=langchain) ![FAISS](https://img.shields.io/badge/FAISS-0467DF?style=for-the-badge&logoColor=white&logo=meta) ![OpenAI Embedding](https://img.shields.io/badge/OpenAI%20Embedding-412991?style=for-the-badge&logoColor=white&logo=openai) ![Hybrid Retrieval](https://img.shields.io/badge/Hybrid%20Retrieval-4B5563?style=for-the-badge&logoColor=white)
+
+**Database · Migration**
+
+![PostgreSQL 16](https://img.shields.io/badge/PostgreSQL%2016-4169E1?style=for-the-badge&logoColor=white&logo=postgresql) ![Alembic](https://img.shields.io/badge/Alembic-2E7D32?style=for-the-badge&logoColor=white) ![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logoColor=black&logo=supabase)
+
+**Document Parsing**
+
+![pypdf](https://img.shields.io/badge/pypdf-B7472A?style=for-the-badge&logoColor=white) ![olefile](https://img.shields.io/badge/olefile-4B5563?style=for-the-badge&logoColor=white) ![HWP · HWPX · PDF](https://img.shields.io/badge/HWP%20·%20HWPX%20·%20PDF-1F2937?style=for-the-badge&logoColor=white)
+
+**Data Source**
+
+![나라장터 Open API](https://img.shields.io/badge/나라장터%20Open%20API-0B4DA2?style=for-the-badge&logoColor=white)
+
+**Infrastructure · Deployment**
+
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logoColor=white&logo=docker) ![Docker Compose](https://img.shields.io/badge/Docker%20Compose-2496ED?style=for-the-badge&logoColor=white&logo=docker) ![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logoColor=white&logo=nginx) ![Oracle Cloud](https://img.shields.io/badge/Oracle%20Cloud-F80000?style=for-the-badge&logoColor=white&logo=oracle) ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logoColor=white&logo=githubactions)
+
+**품질 도구**
+
+![pytest](https://img.shields.io/badge/pytest-0A9EDC?style=for-the-badge&logoColor=white&logo=pytest) ![oxlint](https://img.shields.io/badge/oxlint-5B21B6?style=for-the-badge&logoColor=white) ![oxfmt](https://img.shields.io/badge/oxfmt-5B21B6?style=for-the-badge&logoColor=white)
+
+**협업**
+
+![GitHub Projects](https://img.shields.io/badge/GitHub%20Projects-181717?style=for-the-badge&logoColor=white&logo=github) ![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logoColor=white&logo=discord) ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logoColor=white&logo=notion) ![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logoColor=white&logo=figma)
+
+> 스택 선택에서 두 가지만 고정했습니다. **판정 경로에는 LLM 클라이언트가 들어가지 않습니다**(NFR-2) — LangChain·OpenAI는 추출과 Copilot 경로에만 묶여 있습니다. 그리고 DB는 로컬 PostgreSQL이 아니라 **공용 Supabase**를 기준으로 삼아, 네 파트가 같은 데이터를 보고 작업했습니다.
+--- | --- |
 | Frontend | React 19, TypeScript, Vinext, Vite |
 | UI | Tailwind CSS, shadcn, Base UI |
 | Document Viewer | `@rhwp/core` |
@@ -911,7 +947,61 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 
 ## ✅ 8. 수행결과 (테스트 및 시연 페이지)
 
-### 8.1 서비스 화면
+### 8.1 화면 흐름 (UX Flow)
+
+제품 화면 8종이 실제로 이어지는 순서입니다. **한 번 판정하고 끝나는 직선이 아니라, 확인 필요와 변경 이력에서 판정 화면으로 되돌아옵니다.**
+
+```mermaid
+flowchart TB
+    LOGIN["로그인<br/><code>/login</code><br/>회사 계정 · 소속 회사로 데이터 격리"]
+    GUIDE["이용안내<br/><code>/guide</code><br/>3단계 흐름 · 화면별 역할 · 하지 않는 것"]
+    COMPANY["회사 프로필<br/><code>/company</code><br/>업종 · 소재지 · 실적 · 인증 · 출처와 갱신일"]
+
+    NOTICES["① 공고 찾기<br/><code>/notices</code><br/>프로필로 걸러진 목록 · 판정 상태 배지"]
+    QUAL["② 참가자격 검토<br/><code>/qualification</code><br/>요건별 판정 · 기준 v1 / 현재 v2 전환"]
+
+    EVID["근거 원문<br/><code>/evidence</code><br/>판정 옆 공고 원문 · 조항 · 페이지"]
+    ASK["확인 필요<br/><code>/ask-back</code><br/>답변 가능한 항목만 폼으로 되물음"]
+    EVAL["평가 대응<br/><code>/evaluation</code><br/>제안서에서 관련 위치만 표시"]
+    CHANGES["③ 변경 이력<br/><code>/changes</code><br/>차수 비교 · 영향 요건 재검증"]
+
+    LOGIN --> GUIDE
+    LOGIN --> COMPANY
+    GUIDE --> NOTICES
+    COMPANY -->|"판정에 들어가는 값"| NOTICES
+    NOTICES -->|"검토 건 열기"| QUAL
+
+    QUAL --> EVID
+    QUAL --> ASK
+    QUAL --> EVAL
+    QUAL --> CHANGES
+
+    ASK -->|"답하면 그 요건만 재판정"| QUAL
+    CHANGES -->|"영향받은 요건만 재검증"| QUAL
+    COMPANY -.->|"값을 채우면 다시 판정"| QUAL
+
+    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
+    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
+    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
+    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
+    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
+
+    class NOTICES,QUAL,CHANGES core
+    class EVID,ASK safe
+    class LOGIN,GUIDE,COMPANY src
+    class EVAL plain
+```
+
+| 되돌아오는 경로 | 무엇이 다시 도나 |
+| --- | --- |
+| 확인 필요 → 참가자격 검토 | 사용자가 답한 **그 요건 하나만** 재판정합니다. 전체를 다시 돌리지 않습니다 |
+| 변경 이력 → 참가자격 검토 | 차수 Diff로 **영향받은 요건만** 재검증합니다. 판정 전제가 바뀌었으면 전체 재판정을 요구합니다 |
+| 회사 프로필 → 참가자격 검토 | 비어 있던 값을 채우면 그 값을 쓰는 요건이 다시 판정됩니다 |
+
+설계 단계의 화면 시안·필드 명세·화면별 API 명세는 개발 저장소 `docs/` 에 있습니다.
+
+### 8.2 서비스 화면
+
 
 | 화면 | Route | 현재 범위 |
 | --- | --- | --- |
@@ -930,7 +1020,7 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 
 ![이용안내 화면 — 3단계 흐름과 화면별 역할, 판정 표시 4종, 하지 않는 것](docs/assets/s6-guide.png)
 
-아래 캡처 6장 중 첫 장은 판정에 들어가는 입력값이고, 나머지 5장은 8.2 시연 시나리오와 같은 순서입니다.
+아래 캡처 6장 중 첫 장은 판정에 들어가는 입력값이고, 나머지 5장은 8.3 시연 시나리오와 같은 순서입니다.
 
 **S0 · 회사 프로필** — 판정에 쓰이는 회사 값을 출처·갱신일과 함께 관리합니다. 비어 있는 값은 미달로 만들지 않고 「확인 필요」로 남깁니다.
 
@@ -956,7 +1046,7 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 
 ![변경 이력 화면 — 1차와 2차 원문 좌우 대조](docs/assets/s5-changes.png)
 
-### 8.2 시연 시나리오
+### 8.3 시연 시나리오
 
 데모 케이스는 Golden Fixture **J13 · `R26BK01684863`** 전북대학교 남원글로컬캠퍼스 본관동 생활폐기물 처리 용역입니다.
 1차 → 2차에서 폐기물 운반업 등록코드가 **1224 → 1227**로 바뀐 사례입니다.
@@ -971,7 +1061,7 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 
 > 1차 판정은 미달이 아니라 **보류**였습니다. 「참가 불가였는데 가능해졌다」가 아니라 「1차에서는 판단을 보류했고, 2차 공고 기준으로는 충족으로 확정됐다」가 정확한 표현입니다.
 
-### 8.3 데이터 및 Evaluation
+### 8.4 데이터 및 Evaluation
 
 > 📄 수집 과정과 전처리 8단계, 데이터 출처·라이선스는 [데이터 수집·전처리 문서](docs/데이터-수집-전처리.md)에 따로 정리했습니다.
 
@@ -1075,7 +1165,7 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 > 로컬 실행 기준입니다. CI(Linux)는 환경 차이로 통과 수가 몇 건 다를 수 있습니다.
 > PR CI 결과로 구분해 기록할 예정입니다.
 
-### 8.4 프로젝트 결과
+### 8.5 프로젝트 결과
 
 - 공고 원문에서 참가자격 Requirement와 Evidence를 구조화하고 회사 프로필과 연결했습니다.
 - 변경 전·후 Requirement Diff를 기반으로 영향 요건만 식별하여 재검증하는 흐름을 구현했습니다.
