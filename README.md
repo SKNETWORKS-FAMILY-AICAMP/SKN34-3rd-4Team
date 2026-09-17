@@ -1,5 +1,3 @@
-<img width="1448" height="1086" alt="system-architecture-local" src="https://github.com/user-attachments/assets/b89e77c5-4ec7-48d7-91cf-f816dd029539" /><div align="center">
-
 # 🔍 비드체크 · BidCheck
 
 **나라장터 변경공고 대응형 입찰 제출 검증기**
