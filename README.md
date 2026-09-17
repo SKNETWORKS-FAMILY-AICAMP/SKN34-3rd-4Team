@@ -1,4 +1,4 @@
-<div align="center">
+<img width="1448" height="1086" alt="system-architecture-local" src="https://github.com/user-attachments/assets/b89e77c5-4ec7-48d7-91cf-f816dd029539" /><div align="center">
 
 # 🔍 비드체크 · BidCheck
 
@@ -152,33 +152,11 @@
 
 한 번 판정하고 끝나는 직선이 아닙니다. **정보가 부족하면 Ask-back으로, 공고가 바뀌면 재검증으로 판정 단계에 다시 돌아옵니다.**
 
-```mermaid
-flowchart TD
-    A["실제 나라장터 공고 조회"] --> B["공고문·첨부문서 수집"]
-    B --> C["공고 버전 및 원문 관리"]
-    C --> D["참가자격 Requirement 추출"]
-    D --> E["회사 프로필과 요건 비교"]
-    E --> F["참가자격 판정"]
-    F --> G["근거 원문 확인"]
-    G -- "정보 부족" --> H["Ask-back"]
-    H --> F
-    F -. "변경공고 발생" .-> I["이전 버전 ↔ 최신 버전 비교"]
-    I --> J["영향받은 Requirement 식별"]
-    J --> K["영향 요건만 재검증"]
-    K --> F
-
-    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
-    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
-    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
-    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
-    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
-    classDef zone  fill:none,stroke:#C9CFDC,stroke-width:1px,color:#5C6270
-
-    class A,B,C src
-    class D llm
-    class E,F,I,J,K core
-    class G,H safe
-```
+<p align="center">
+  <img src="./docs/assets/all-flow.png"
+       width="900"
+       alt="전체 흐름">
+</p>
 
 ### 💡 배경 — 담당자가 실제로 확인하는 것
 
@@ -235,26 +213,11 @@ flowchart TD
 
 공고에서 필요한 조건이 존재하지만 회사 프로필만으로 판단할 수 없는 경우, 모든 `UNKNOWN`을 동일하게 처리하지 않습니다. 사용자가 직접 답변하여 해결할 수 있는 항목만 Ask-back 대상으로 구분합니다.
 
-```mermaid
-flowchart TD
-    A["Requirement 판정"] --> B["UNKNOWN"]
-    B --> C{"사용자에게<br/>확인 가능한 정보인가?"}
-    C -- "Yes" --> D["Ask-back"]
-    C -- "No" --> E["확인 필요 상태 유지"]
-    D --> F["사용자 답변"]
-    F --> G["해당 Requirement 재판정"]
-
-    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
-    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
-    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
-    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
-    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
-    classDef zone  fill:none,stroke:#C9CFDC,stroke-width:1px,color:#5C6270
-
-    class A,G core
-    class B,C plain
-    class D,E,F safe
-```
+<p align="center">
+  <img src="./docs/assets/requirement-askback-flow.png"
+       width="900"
+       alt="회사 정보가 부족한 경우">
+</p>
 
 ### 🚫 이 서비스가 하지 않는 것
 
@@ -432,33 +395,11 @@ flowchart TD
 
 ### 도메인 지도
 
-```mermaid
-flowchart TB
-    A["① 공고 · 버전 · 원문 문서 — 8개"]
-    B["② 회사 프로필 — 9개"]
-    C["③ 참가자격 검토 Case — 2개"]
-    D["④ 자격요건 분석 · 판정 — 5개"]
-    E["⑤ 재검증 · Ask-back — 2개"]
-    F["⑥ 계약조항 검토 — 2개"]
-
-    A --> C
-    B --> C
-    C --> D
-    D --> E
-    A -. "공고 변경 발생 시" .-> E
-    A --> F
-
-    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
-    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
-    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
-    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
-    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
-    classDef zone  fill:none,stroke:#C9CFDC,stroke-width:1px,color:#5C6270
-
-    class A,B src
-    class C,D core
-    class E,F safe
-```
+<p align="center">
+  <img src="./docs/assets/domain-map.png"
+       width="900"
+       alt="도메인 지도">
+</p>
 
 | 도메인 | 테이블 | 수 |
 | --- | --- | --- |
@@ -476,29 +417,19 @@ flowchart TB
 
 **이 구조가 이 서비스의 전제입니다.** `bid_notices`(공고) 아래 `bid_notice_versions`(차수)를 두고 덮어쓰지 않습니다. 공고를 덮어쓰면 1차와 2차를 비교할 수 없고, 변경 재검증이 원천적으로 불가능해집니다.
 
-```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#FFFFFF','primaryBorderColor':'#2F6FE4','primaryTextColor':'#123A6B','lineColor':'#8792B5','tertiaryColor':'#F6F8FC','fontSize':'15px'}}}%%
-erDiagram
-    BID_NOTICES ||--o{ BID_NOTICE_VERSIONS : "차수 (덮어쓰지 않음)"
-    BID_NOTICE_VERSIONS ||--o{ NOTICE_DOCUMENTS : "첨부"
-    BID_NOTICE_VERSIONS ||--o{ QUALIFICATION_ANALYSIS_RUNS : "요건 추출 (LLM)"
-    QUALIFICATION_ANALYSIS_RUNS ||--o{ QUALIFICATION_REQUIREMENTS : "구조화 요건"
-    QUALIFICATION_ANALYSIS_RUNS ||--o{ QUALIFICATION_EVIDENCE : "원문 근거"
-```
+<p align="center">
+  <img src="./docs/assets/erd-notice-qualification-relations.png"
+       width="900"
+       alt="erd notice qualification relations">
+</p>
 
 **검토 건 하나에 판정이 매달리는 구조** — 회사와 공고가 만나 검토 건이 되고, 그 아래로 판정 · Ask-back · 재검증이 붙습니다.
 
-```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#FFFFFF','primaryBorderColor':'#2F6FE4','primaryTextColor':'#123A6B','lineColor':'#8792B5','tertiaryColor':'#F6F8FC','fontSize':'15px'}}}%%
-erDiagram
-    COMPANIES ||--o{ PREFLIGHT_CASES : "검토 건"
-    BID_NOTICES ||--o{ PREFLIGHT_CASES : "검토 건"
-    BID_NOTICE_VERSIONS ||--o{ PREFLIGHT_CASES : "기준 · 현재 차수"
-    PREFLIGHT_CASES ||--o{ QUALIFICATION_JUDGMENT_RUNS : "판정 실행"
-    QUALIFICATION_JUDGMENT_RUNS ||--o{ QUALIFICATION_JUDGMENTS : "요건별 판정"
-    QUALIFICATION_JUDGMENT_RUNS ||--o{ QUALIFICATION_ANSWERS : "Ask-back"
-    QUALIFICATION_JUDGMENT_RUNS ||--o{ QUALIFICATION_REVALIDATION_RUNS : "변경 재검증"
-```
+<p align="center">
+  <img src="./docs/assets/erd-preflight-judgment-relations.png"
+       width="900"
+       alt="erd-preflight-judgment-relations">
+</p>
 
 **판정 하나가 무엇에 묶여 있는지** — `qualification_judgment_runs`는 검토 건 · 분석 Run · 회사 · 공고 차수를 모두 참조하고, `profile_snapshot`에 판정 시점의 회사 정보를 통째로 남깁니다. 회사 정보가 나중에 바뀌어도 과거 판정이 **어떤 회사 정보로 계산됐는지** 그대로 남습니다.
 
@@ -520,60 +451,11 @@ erDiagram
 
 공고 정보, 추출 텍스트, 분석 및 판정 결과 등 구조화 데이터는 Supabase PostgreSQL에 저장하고, 수집된 첨부파일 원본은 OCI Object Storage에 저장합니다.
 
-```mermaid
-flowchart LR
-    USER[사용자 브라우저]
-    G2B[나라장터 Open API]
-    OPENAI[OpenAI API]
-
-    subgraph OCI[OCI Compute]
-   
-        NGINX[Nginx<br/>HTTPS · Reverse Proxy]
-        WEB[Frontend<br/>Vinext Production Server]
-        POLLER[공고 수집기<br/>Notice Poller]
-
-        subgraph BACKEND[Backend · FastAPI]
-   
-            PARSER[문서 Parsing]
-            EXTRACTION[참가자격 분석<br/>Section/Keyword · LLM]
-            RULE[Rule Engine]
-            COPILOT[Copilot 문서 검색<br/>FAISS/Hybrid]
-        end
-    end
-
-    DB[(Supabase PostgreSQL)]
-    STORAGE[(OCI Object Storage<br/>첨부파일 원본)]
-
-    USER -->|HTTPS| NGINX
-    NGINX -->|화면 · RSC| WEB
-    NGINX -->|/api/*| BACKEND
-
-    POLLER -->|공고 · 변경 차수 조회| G2B
-    POLLER --> DB
-    POLLER --> STORAGE
-
-    BACKEND --> DB
-    BACKEND --> STORAGE
-
-    PARSER --> EXTRACTION
-    EXTRACTION --> RULE
-    EXTRACTION --> OPENAI
-    COPILOT --> OPENAI
-
-    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
-    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
-    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
-    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
-    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
-    classDef zone  fill:none,stroke:#C9CFDC,stroke-width:1px,color:#5C6270
-
-    class USER,G2B,OPENAI src
-    class NGINX,WEB,POLLER,PARSER,RULE core
-    class EXTRACTION,COPILOT llm
-    class DB,STORAGE src
-    class OCI,BACKEND zone
-
-```
+<p align="center">
+  <img src="./docs/assets/system-architecture-production"
+       width="900"
+       alt="시스템 아키텍처">
+</p>
 
 운영 환경의 주요 처리 흐름은 다음과 같습니다.
 
@@ -590,63 +472,11 @@ flowchart LR
 
 Frontend는 Vinext 개발 서버로 실행하고, Backend API, PostgreSQL, Notice Poller는 Docker Compose로 실행합니다. 운영 환경의 OCI Object Storage 대신 로컬 Docker Volume에 첨부파일 원본을 저장합니다.
 
-```mermaid
-flowchart TB
-    USER[개발자 브라우저]
-    G2B[나라장터 Open API]
-    OPENAI[OpenAI API]
-
-    subgraph LOCAL[Local Development PC]
-        direction TB
-   
-        WEB[Frontend<br/>Vinext Dev Server :3000]
-
-        subgraph DOCKER[Docker Compose]
-        direction TB
-   
-            POLLER[공고 수집기<br/>Notice Poller]
-            DB[(PostgreSQL)]
-            STORAGE[(Docker Volume<br/>첨부파일 원본)]
-
-            subgraph BACKEND[Backend · FastAPI :8000]
-        direction LR
-   
-                PARSER[문서 Parsing]
-                EXTRACTION[참가자격 분석<br/>Section/Keyword · LLM]
-                RULE[Rule Engine]
-                COPILOT[Copilot 문서 검색<br/>FAISS/Hybrid]
-            end
-        end
-    end
-
-    USER --> WEB
-    WEB -->|API 요청| BACKEND
-
-    POLLER -->|공고 · 변경 차수 조회| G2B
-    POLLER --> DB
-    POLLER --> STORAGE
-
-    BACKEND --> DB
-    BACKEND --> STORAGE
-
-    PARSER --> EXTRACTION
-    EXTRACTION --> RULE
-    EXTRACTION --> OPENAI
-    COPILOT --> OPENAI
-
-    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
-    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
-    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
-    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
-    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
-    classDef zone  fill:none,stroke:#C9CFDC,stroke-width:1px,color:#5C6270
-
-    class USER,G2B,OPENAI src
-    class WEB,POLLER,PARSER,RULE core
-    class EXTRACTION,COPILOT llm
-    class DB,STORAGE src
-    class LOCAL,DOCKER,BACKEND zone
-```
+<p align="center">
+  <img src="./docs/assets/system-architecture-local"
+       width="900"
+       alt="시스템 아키텍처">
+</p>
 
 로컬 환경의 주요 처리 흐름은 다음과 같습니다.
 
@@ -663,63 +493,11 @@ flowchart TB
 
 어디까지가 LLM이고 어디부터가 코드인지를 한 장으로 보면 다음과 같습니다. **노란 테두리가 LLM이 하는 일, 초록 테두리가 코드가 결정론적으로 하는 일입니다.**
 
-```mermaid
-flowchart TB
-    subgraph collect["① 수집"]
-        direction LR
-   
-        A[나라장터 Open API] --> B[공고 · 첨부 수집]
-        B --> C[(PostgreSQL<br/>Document Storage)]
-    end
-
-    subgraph extract["② 자격요건 추출"]
-        direction LR
-   
-        D[Document Parsing] --> E[Semantic<br/>Chunk Selection]
-        E --> F["LLM Requirement<br/>Extraction"]
-        F --> G["원문 대조 검증<br/>Grounding"]
-        G --> H[Canonical Requirement<br/>+ Evidence]
-    end
-
-    subgraph judge["③ 판정"]
-        direction LR
-   
-        P[Company Profile] --> I[Rule Engine]
-        I --> J[Judgment]
-        J --> K{답변으로<br/>풀리는 UNKNOWN?}
-        K -->|Yes| L[Ask-back] --> I
-    end
-
-    subgraph change["④ 변경 재검증"]
-        direction LR
-   
-        M[변경공고] --> N[Version · Requirement<br/>Diff] --> O[영향받은<br/>Requirement]
-    end
-
-    subgraph rag["⑤ Document RAG"]
-        direction LR
-   
-        R[Version-scoped<br/>Index] --> S["Copilot QA<br/>Citation"]
-    end
-
-    C --> D
-    H --> I
-    O --> I
-    D --> R
-
-    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
-    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
-    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
-    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
-    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
-    classDef zone  fill:none,stroke:#C9CFDC,stroke-width:1px,color:#5C6270
-
-    class F,S llm
-    class G,I,J,N,O core
-    class C,H,R src
-    class A,B,D,E,P,K,L,M plain
-    class collect,extract,judge,change,rag zone
-```
+<p align="center">
+  <img src="./docs/assets/ai-rule-design-flow"
+       width="900"
+       alt="AI Rule 설계">
+</p>
 
 🟡 노란 테두리 — LLM이 하는 일 &nbsp;·&nbsp; 🟢 초록 테두리 — 코드가 결정론적으로 하는 일
 
@@ -751,33 +529,11 @@ flowchart TB
 
 ### 7.3 변경공고 재검증
 
-```mermaid
-flowchart TB
-    A["기준 공고 — 분석 · 판정 완료"]
-    B["변경공고 수집 · 새 차수 생성"]
-    C["Canonical Requirement Diff"]
-    D["ADDED / MODIFIED / REMOVED 식별"]
-    E{"판정 전제가 그대로인가<br/>회사 프로필 · 판정 기준일"}
-    F["영향받은 요건만 재판정"]
-    G["전체 재판정 요구"]
-    H["변경 전 · 후 결과와 Evidence 비교"]
-
-    A --> B --> C --> D --> E
-    E -->|"그대로"| F --> H
-    E -->|"바뀜"| G --> H
-
-    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
-    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
-    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
-    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
-    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
-    classDef zone  fill:none,stroke:#C9CFDC,stroke-width:1px,color:#5C6270
-
-    class C,D,F,H core
-    class A,B plain
-    class E,G llm
-```
-
+<p align="center">
+  <img src="./docs/assets/notice-revalidation-flow.png"
+       width="900"
+       alt="변경공고 재검증">
+</p>
 코드 경로와 합성 회귀 테스트는 구현되어 있습니다. 변경되지 않은 요건은 기존 판정을 승계하고, 추가·수정된 요건만 현재 회사 프로필로 다시 판정합니다. 기준 판정 이후 회사 프로필이나 판정 기준일이 바뀌었다면 부분 재검증을 중단하고 전체 재판정을 요구합니다.
 
 실제 공고 `R26BK01686455`에서 강원도 지역 제한 문구가 변경 차수에서 사라진 사례를 G2 후보로 확보했습니다. 다만 현재 관찰 라벨은 `DRAFT / not_ground_truth`이며, 의미상 요건 삭제와 법적 효력은 사람 검수 전이므로 실사례 검증 완료로 표시하지 않습니다.
@@ -1003,46 +759,11 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 
 로그인으로 들어와 제품 화면 8종이 이어지는 순서입니다. **한 번 판정하고 끝나는 직선이 아니라, 확인 필요와 변경 이력에서 판정 화면으로 되돌아옵니다.**
 
-```mermaid
-flowchart TB
-    LOGIN["로그인<br/><code>/login</code><br/>회사 계정 · 소속 회사로 데이터 격리"]
-    GUIDE["이용안내<br/><code>/guide</code><br/>3단계 흐름 · 화면별 역할 · 하지 않는 것"]
-    COMPANY["회사 프로필<br/><code>/company</code><br/>업종 · 소재지 · 실적 · 인증 · 출처와 갱신일"]
-
-    NOTICES["① 공고 찾기<br/><code>/notices</code><br/>프로필로 걸러진 목록 · 판정 상태 배지"]
-    QUAL["② 참가자격 검토<br/><code>/qualification</code><br/>요건별 판정 · 기준 v1 / 현재 v2 전환"]
-
-    EVID["근거 원문<br/><code>/evidence</code><br/>판정 옆 공고 원문 · 조항 · 페이지"]
-    ASK["확인 필요<br/><code>/ask-back</code><br/>답변 가능한 항목만 폼으로 되물음"]
-    EVAL["평가 대응<br/><code>/evaluation</code><br/>제안서에서 관련 위치만 표시"]
-    CHANGES["③ 변경 이력<br/><code>/changes</code><br/>차수 비교 · 영향 요건 재검증"]
-
-    LOGIN --> GUIDE
-    LOGIN --> COMPANY
-    GUIDE --> NOTICES
-    COMPANY -->|"판정에 들어가는 값"| NOTICES
-    NOTICES -->|"검토 건 열기"| QUAL
-
-    QUAL --> EVID
-    QUAL --> ASK
-    QUAL --> EVAL
-    QUAL --> CHANGES
-
-    ASK -->|"답하면 그 요건만 재판정"| QUAL
-    CHANGES -->|"영향받은 요건만 재검증"| QUAL
-    COMPANY -.->|"값을 채우면 다시 판정"| QUAL
-
-    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
-    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
-    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
-    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
-    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
-
-    class NOTICES,QUAL,CHANGES core
-    class EVID,ASK safe
-    class LOGIN,GUIDE,COMPANY src
-    class EVAL plain
-```
+<p align="center">
+  <img src="./docs/assets/ux-flow"
+       width="900"
+       alt="화면 흐름">
+</p>
 
 | 되돌아오는 경로 | 무엇이 다시 도나 |
 | --- | --- |
