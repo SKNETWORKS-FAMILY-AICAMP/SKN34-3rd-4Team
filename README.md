@@ -306,19 +306,6 @@ flowchart TD
 ![GitHub Projects](https://img.shields.io/badge/GitHub%20Projects-181717?style=for-the-badge&logoColor=white&logo=github) ![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logoColor=white&logo=discord) ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logoColor=white&logo=notion) ![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logoColor=white&logo=figma)
 
 > 스택 선택에서 두 가지만 고정했습니다. **판정 경로에는 LLM 클라이언트가 들어가지 않습니다**(NFR-2) — LangChain·OpenAI는 추출과 Copilot 경로에만 묶여 있습니다. 그리고 DB는 로컬 PostgreSQL이 아니라 **공용 Supabase**를 기준으로 삼아, 네 파트가 같은 데이터를 보고 작업했습니다.
---- | --- |
-| Frontend | React 19, TypeScript, Vinext, Vite |
-| UI | Tailwind CSS, shadcn, Base UI |
-| Document Viewer | `@rhwp/core` |
-| Backend | Python, FastAPI, SQLAlchemy |
-| Database / Migration | PostgreSQL 16, Alembic, Supabase(공용 DB) |
-| AI | OpenAI API, LangChain Core |
-| Document RAG | OpenAI Embedding, FAISS, Hybrid Retrieval |
-| Document Parsing | pypdf, olefile |
-| Data Source | 나라장터 Open API |
-| Infra | Docker, Docker Compose, GitHub Actions |
-| 품질 도구 | pytest, oxlint, oxfmt |
-| 협업 | GitHub Projects, Discord, Notion, Figma |
 
 ---
 
