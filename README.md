@@ -1,3 +1,5 @@
+<div align="center">
+
 # 🔍 비드체크 · BidCheck
 
 **나라장터 변경공고 대응형 입찰 제출 검증기**
