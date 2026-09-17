@@ -107,8 +107,7 @@
 
 ### 협업 및 프로젝트 운영
 
-프로젝트의 기획, 개발, 소통, 작업 관리가 분리되지 않도록  
-**GitHub 개발 흐름을 중심으로 Discord, Notion, GitHub Projects, Figma와 MCP를 역할별로 연결해 협업 환경을 구성했습니다.**
+프로젝트의 기획, 개발, 소통, 작업 관리가 분리되지 않도록  **GitHub 개발 흐름을 중심으로 Discord, Notion, GitHub Projects, Figma와 MCP를 역할별로 연결해 협업 환경을 구성했습니다.**
 
 <p align="center">
   <img src="./docs/assets/collaboration-workflow.png"
