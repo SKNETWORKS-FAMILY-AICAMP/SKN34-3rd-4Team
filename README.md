@@ -116,6 +116,17 @@ flowchart LR
     C --> D["Review / Test"]
     D --> E["Merge"]
     E --> F["통합 상태 확인"]
+
+    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
+    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
+    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
+    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
+    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
+    classDef zone  fill:none,stroke:#C9CFDC,stroke-width:1px,color:#5C6270
+
+    class A,B,C,D plain
+    class E core
+    class F safe
 ```
 
 - 기능 또는 수정 단위로 Branch와 Pull Request를 만들었습니다.
@@ -154,6 +165,18 @@ flowchart TD
     I --> J["영향받은 Requirement 식별"]
     J --> K["영향 요건만 재검증"]
     K --> F
+
+    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
+    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
+    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
+    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
+    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
+    classDef zone  fill:none,stroke:#C9CFDC,stroke-width:1px,color:#5C6270
+
+    class A,B,C src
+    class D llm
+    class E,F,I,J,K core
+    class G,H safe
 ```
 
 ### 💡 배경 — 담당자가 실제로 확인하는 것
@@ -219,6 +242,17 @@ flowchart TD
     C -- "No" --> E["확인 필요 상태 유지"]
     D --> F["사용자 답변"]
     F --> G["해당 Requirement 재판정"]
+
+    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
+    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
+    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
+    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
+    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
+    classDef zone  fill:none,stroke:#C9CFDC,stroke-width:1px,color:#5C6270
+
+    class A,G core
+    class B,C plain
+    class D,E,F safe
 ```
 
 ### 🚫 이 서비스가 하지 않는 것
@@ -390,12 +424,16 @@ flowchart TB
     A -. "공고 변경 발생 시" .-> E
     A --> F
 
-    classDef src fill:none,stroke:#8792b5,stroke-width:2px,color:#2b3350
-    classDef core fill:none,stroke:#2a78d6,stroke-width:3px,color:#123a6b
-    classDef out fill:none,stroke:#1baf7a,stroke-width:2px,color:#0f4f39
+    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
+    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
+    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
+    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
+    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
+    classDef zone  fill:none,stroke:#C9CFDC,stroke-width:1px,color:#5C6270
+
     class A,B src
     class C,D core
-    class E,F out
+    class E,F safe
 ```
 
 | 도메인 | 테이블 | 수 |
@@ -493,6 +531,19 @@ flowchart LR
     EXTRACTION --> RULE
     EXTRACTION --> OPENAI
     COPILOT --> OPENAI
+
+    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
+    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
+    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
+    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
+    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
+    classDef zone  fill:none,stroke:#C9CFDC,stroke-width:1px,color:#5C6270
+
+    class USER,G2B,OPENAI src
+    class NGINX,WEB,POLLER,PARSER,RULE core
+    class EXTRACTION,COPILOT llm
+    class DB,STORAGE src
+    class OCI,BACKEND zone
 ```
 
 운영 환경의 주요 처리 흐름은 다음과 같습니다.
@@ -547,6 +598,19 @@ flowchart LR
     EXTRACTION --> RULE
     EXTRACTION --> OPENAI
     COPILOT --> OPENAI
+
+    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
+    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
+    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
+    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
+    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
+    classDef zone  fill:none,stroke:#C9CFDC,stroke-width:1px,color:#5C6270
+
+    class USER,G2B,OPENAI src
+    class WEB,POLLER,PARSER,RULE core
+    class EXTRACTION,COPILOT llm
+    class DB,STORAGE src
+    class LOCAL,DOCKER,BACKEND zone
 ```
 
 로컬 환경의 주요 처리 흐름은 다음과 같습니다.
@@ -598,15 +662,16 @@ flowchart LR
     O --> I
     D --> R
 
-    classDef llm fill:none,stroke:#eda100,stroke-width:3px
-    classDef rule fill:none,stroke:#1baf7a,stroke-width:3px
-    classDef store fill:none,stroke:#8792b5,stroke-width:2px
-    classDef plain fill:none,stroke:#b9bccb,stroke-width:1.5px
-    classDef zone fill:none,stroke:#b9bccb,stroke-width:1px
+    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
+    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
+    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
+    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
+    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
+    classDef zone  fill:none,stroke:#C9CFDC,stroke-width:1px,color:#5C6270
 
     class F,S llm
-    class G,I,J,N,O rule
-    class C,H,R store
+    class G,I,J,N,O core
+    class C,H,R src
     class A,B,D,E,P,K,L,M plain
     class collect,extract,judge,change,rag zone
 ```
@@ -656,12 +721,16 @@ flowchart TB
     E -->|"그대로"| F --> H
     E -->|"바뀜"| G --> H
 
-    classDef rule fill:none,stroke:#1baf7a,stroke-width:3px,color:#0f4f39
-    classDef plain fill:none,stroke:#b9bccb,stroke-width:1.5px,color:#2b3350
-    classDef warn fill:none,stroke:#eda100,stroke-width:2.5px,color:#6b4a00
-    class C,D,F,H rule
+    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
+    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
+    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
+    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
+    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
+    classDef zone  fill:none,stroke:#C9CFDC,stroke-width:1px,color:#5C6270
+
+    class C,D,F,H core
     class A,B plain
-    class E,G warn
+    class E,G llm
 ```
 
 코드 경로와 합성 회귀 테스트는 구현되어 있습니다. 변경되지 않은 요건은 기존 판정을 승계하고, 추가·수정된 요건만 현재 회사 프로필로 다시 판정합니다. 기준 판정 이후 회사 프로필이나 판정 기준일이 바뀌었다면 부분 재검증을 중단하고 전체 재판정을 요구합니다.
@@ -832,10 +901,15 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 | 평가 대응 | `/evaluation` | 참가자격 기반 참고 정보 제공 · 평가 전용 추출과 점수 예측은 미지원 |
 | 변경 이력 | `/changes` | 버전·Requirement Diff와 재검증 결과 |
 | 회사 프로필 | `/company` | 회사 정보·업종·실적·인증/등록 관리 |
+| 이용안내 | `/guide` | 처음 쓰는 사용자를 위한 3단계 흐름과 화면별 안내 |
 
-제품 화면 7종의 이동과 주요 API 연결은 구현되어 있습니다. 실제 G2와 안전한 Ask-back 답변을 포함한 전체 Human Click E2E는 최종 검증 대기 상태입니다.
+제품 화면 7종과 이용안내의 이동, 주요 API 연결은 구현되어 있습니다. 실제 G2와 안전한 Ask-back 답변을 포함한 전체 Human Click E2E는 최종 검증 대기 상태입니다.
 
-아래 캡처 5장은 8.2 시연 시나리오와 같은 순서입니다.
+아래 캡처 6장은 8.2 시연 시나리오와 같은 순서입니다. 첫 장은 판정에 들어가는 입력값입니다.
+
+**S0 · 회사 프로필** — 판정에 쓰이는 회사 값을 출처·갱신일과 함께 관리합니다. 비어 있는 값은 미달로 만들지 않고 「확인 필요」로 남깁니다.
+
+![회사 프로필 화면 — 7개 영역 중 4개를 채운 상태와 비어 있는 항목 3건](docs/assets/s0-company.png)
 
 **S1 · 공고 찾기** — 회사 프로필로 걸러진 공고 목록에서 대상 공고를 엽니다.
 
