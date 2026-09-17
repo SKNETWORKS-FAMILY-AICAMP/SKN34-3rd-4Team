@@ -68,21 +68,29 @@
 
 ---
 
+현재 ## 📊 핵심 결과 아래의 표를 아래 표로 교체합니다.
+
 ## 📊 핵심 결과
 
 | 항목 | 결과 |
 | --- | --- |
-| 판정 회귀 기대값 일치 | **110 / 138** 요건 (초기 기준선 104/138) |
-| 잘못된 확정 판정 | **0건** — 기준선·최신 회귀 모두 |
-| 안전한 보류 | 28 / 138 |
-| 공고 단위 상태 일치 | **37 / 40** |
-| 근거 인용 버전 무결성 | **100%** |
-| DB 규모 | 도메인 테이블 **30개** + 코드표 4개 · 마이그레이션 024 |
+| Golden Rule 회귀 기대값 일치 | **110 / 138** |
+| 안전한 보류 | **28 / 138** |
+| 잘못된 확정 판정 | **0건** |
+| 자유질문 Routing | **1 / 100 → 41 / 100 → 100 / 100** |
+| Document Retrieval | Dense Recall@4 **29.17% → Hybrid 50.00%** |
+| LLM Rerank 비교 | Recall@4 **55.56%** · 성능은 높지만 지연 때문에 기본 경로 미채택 |
+| 근거 인용 Version 무결성 | **100%** |
+| Copilot Guided Job | **23 / 24 COMPLETE** · 1건 safe PARTIAL |
+| DB Snapshot | 공고 **1,132건** · 차수 **1,265건** · 첨부 **4,826건** |
 | 요구사항 | 비기능 11건 · 기능 **70건**(8영역) |
 | 제품 화면 | **8종** |
 
-> 위 수치는 승인 전 `DRAFT` Golden Fixture에 Canonical Requirement를 직접 입력한 **Rule 회귀 지표**입니다.
-> Requirement Extraction 성능이나 서비스 전체 정확도가 아닙니다. 공고 20건 · 요건 138행 기준입니다.
+> 각 수치는 서로 다른 평가를 의미합니다.  
+> `110/138`은 Canonical Requirement를 직접 입력한 **Rule 회귀**,  
+> `100/100`은 자유질문의 **Intent Routing exact match**,  
+> `50.00%`는 **Evidence Retrieval Recall@4**,  
+> `23/24`는 남원 Demo 합성 Profile 기반 **Actual Model Task 평가**입니다. 
 
 ---
 
@@ -783,25 +791,89 @@ flowchart TB
 
 ### 7.4 AI Copilot
 
-AI Copilot은 현재 검토 건을 중심으로 판정·근거·확인 필요 항목·회사 프로필·변경 내역을 조회하는 작업형 인터페이스입니다.
+AI Copilot은 범용 챗봇이 아니라 **현재 입찰 검토 Case를 자연어로 탐색하기 위한 업무 인터페이스**입니다.
 
-| 사용자가 묻는 것 | Copilot이 하는 일 |
-| --- | --- |
-| "이 공고 참가할 수 있어?" | 현재 검토 건의 판정 결과를 요약 |
-| "왜 미달이야?" | 해당 요건의 판정 사유와 비교값을 제시 |
-| "두 번째 조건 근거 보여줘." | 직전 회신의 참조를 해석해 원문 Evidence 연결 |
-| "변경공고에서 뭐가 바뀌었어?" | 차수 간 Requirement Diff 조회 |
-| "전체 변경 요건을 다시 검증해줘." | 재검증을 **제안**하고 사용자 확인 후 실행 |
+참가 가능 여부를 새로 판정하는 대신 Backend에 저장된 현재 Judgment, Company Profile, 확인 필요 항목, 변경 결과와 공고 원문을 다시 조회해 설명합니다.
 
-- 제한된 회신 컨텍스트로 "그 조건", "두 번째" 같은 참조를 해석합니다.
-- 실제 Requirement, 판정, Evidence, 공고 Version, Company Profile은 Backend에서 다시 조회합니다.
-- 현재 공고 버전의 공개 문서 QA는 사용자 동의 후 Document RAG를 사용합니다.
-- 답변 반영과 재검증은 먼저 제안만 보여주며, 사용자가 별도 확인한 뒤 실행합니다.
-- Citation이 검증되지 않은 생성 답변은 사실 답변으로 노출하지 않습니다.
+#### Guided Job 2종 · 추천 질문 6개
 
-> **대화 맥락은 제한적으로 사용하고, 서비스 사실은 Backend에서 다시 확인합니다.**
+**변경공고 대응**
 
-일반 목적 Agent, 장기 기억, 여러 공고 버전을 동시에 검색하는 Document QA까지 구현됐다는 의미는 아닙니다.
+1. 무엇이 바뀌었나요?
+2. 우리 회사에 어떤 영향이 있나요?
+3. 무엇을 확인해야 하나요?
+
+**입찰 참여 준비**
+
+1. 필요한 서류·기한·방법은?
+2. 준비 순서는?
+3. 아직 확인하지 못한 것은?
+
+추천 질문뿐 아니라 자유 입력도 함께 지원합니다.
+
+```mermaid
+flowchart LR
+    A["추천 질문 / 자유 입력"]
+    B["Conversation Scope<br/>Task Plan"]
+    C["Product Tools<br/>Document Read"]
+    D["Fact / Source"]
+    E["Claim 생성"]
+    F["Claim Validation"]
+    G["Grounded Answer"]
+
+    A --> B --> C --> D --> E --> F --> G
+```
+
+#### Product Read Tool
+
+```text
+READ_JUDGMENT
+READ_PROFILE
+READ_CHECKS
+READ_DOCUMENT
+READ_CHANGES
+```
+
+Copilot은 대화 History 자체를 서비스 사실로 사용하지 않습니다.
+
+예를 들어 사용자가:
+
+> “두 번째 조건은 왜 확인 필요야?”
+
+라고 물으면 직전 답변에서 실제로 보여준 두 번째 Target을 찾고, 현재 Case의 Product 상태와 Source를 Backend에서 다시 조회합니다.
+
+#### Fact · Source · Claim Validation
+
+생성 답변을 그대로 사용자에게 보여주지 않고 다음 구조로 검증합니다.
+
+```text
+Server Fact / Document Source
+→ Model Draft
+→ Claim Validation
+→ Supported Claim만 게시
+```
+
+검증되지 않은 Claim은 제거하거나 `PARTIAL`로 반환합니다.
+
+#### Write Safety
+
+사용자의 자연어 동의를 바로 저장 명령으로 처리하지 않습니다.
+
+```text
+/chat
+→ Read / Explain / Action Proposal
+
+/actions/confirm
+→ 명시적 사용자 확인
+→ 최신 상태 재검증
+→ Product Service 실행
+```
+
+따라서 `"응"`, `"그래"` 같은 자연어만으로 회사정보 저장이나 재검증이 실행되지 않습니다.
+
+> **대화는 기억하되, 사실은 Backend에서 다시 확인합니다.**
+
+상세 구조와 안전 설계는 [`docs/04-AI-Core-Copilot.md`](./docs/04-AI-Core-Copilot.md)를 참고합니다.
 
 ---
 
@@ -1132,6 +1204,119 @@ flowchart TB
 - [Golden Fixture v0.2](https://github.com/gyuniverse-hq/bid-change-validator/tree/develop/samples/golden/qualification-v0.2)
 - [실공고 Snapshot Dataset](https://github.com/gyuniverse-hq/bid-change-validator/tree/develop/samples/golden/qualification-real-v0.1)
 - [Document RAG Evaluation](https://github.com/gyuniverse-hq/bid-change-validator/blob/develop/docs/08_qa_reports/ai-copilot-v2/e3-rag-evaluation.md)
+
+### AI Copilot · Document Retrieval 개선 결과
+
+AI Copilot은 처음부터 자유질문을 잘 처리한 것이 아니라, 고정 평가셋에서 실패를 측정한 뒤 단계적으로 개선했습니다.
+
+#### 자유질문 Routing
+
+100개 자유입력 평가셋:
+
+```text
+Document QA           60
+Judgment Explanation  32
+Change Comparison      8
+-------------------------
+Total                 100
+```
+
+| 단계 | Routing Exact Match | 주요 변경 |
+| --- | ---: | --- |
+| E0 Baseline | **1 / 100** | Keyword 중심 Router |
+| E1 | **41 / 100** | 명확한 Alias 및 실패 UX 보완 |
+| E2 | **100 / 100** | Weak Read에만 Semantic Router 재검토 |
+
+모든 요청을 LLM Router에 넘기지 않고 다음 방식을 선택했습니다.
+
+```text
+명확한 UI Intent / Write
+→ Deterministic
+
+UNKNOWN / Weak Read
+→ Semantic Recheck
+```
+
+> `100/100`은 챗봇 답변 정확도가 아니라 **고정 100문항의 Intent Routing Exact Match**입니다.
+
+#### Document Retrieval 비교
+
+동일한 Document QA Fixture에서 `k=4`로 비교했습니다.
+
+| 검색 방식 | Recall@4 | p50 Latency |
+| --- | ---: | ---: |
+| Dense | **29.17%** | 144.50ms |
+| Hybrid | **50.00%** | 170.58ms |
+| Hybrid + LLM Rerank | **55.56%** | 2849.73ms |
+
+LLM Rerank가 가장 높은 Recall을 기록했지만 Hybrid 대비 개선 폭은 `+5.56%p`인 반면 p50 응답시간은 약 `2.85초`까지 증가했습니다.
+
+따라서 기본 검색 전략은 **Dense + BM25 Hybrid Retrieval**을 선택했습니다.
+
+> 가장 높은 Offline Metric보다 **검색 품질 · Latency · 비용 · 운영 복잡도**를 함께 고려했습니다.
+
+#### Grounded Answer 개선
+
+초기에는 Citation 존재 여부만 확인했지만 다음 문제가 있었습니다.
+
+- 질문과 관계없는 Source를 Citation
+- 일부 근거만 있는데 전체 조건을 확정
+- 원문의 불완전한 코드·숫자를 모델이 임의로 보정
+
+이를 다음과 같이 개선했습니다.
+
+```text
+Prompt v1
+Citation 존재
+
+↓ v2
+
+직접 근거가 없으면 Abstain
+
+↓ v3
+
+Partial Evidence를 전체 결론으로 확대 금지
+
+↓ v4
+
+원문 값의 임의 복구 금지
+
+↓ v3.1
+
+Fact / Source / Claim Validation
+```
+
+최종 평가에서 Citation Version Integrity는 **100%**를 유지했습니다.
+
+#### Guided Job Actual Model 평가
+
+최종 Demo 대상인 전북대학교 남원글로컬캠퍼스 사례에서 합성 Company Profile J13~J16을 사용했습니다.
+
+```text
+4 Profiles
+×
+6 Guided Questions
+=
+24 Turns
+```
+
+결과:
+
+```text
+23 / 24 COMPLETE
+1 / 24 PARTIAL
+```
+
+PARTIAL 1건은 잘못된 Fact 참조가 포함된 추천 Claim을 Validation 단계에서 제거한 사례입니다.
+
+- 예상하지 않은 Write Action: **0건**
+- 내부 식별자 노출 오류: **0건**
+- 평균 Latency: 약 **26.92초**
+- 최대 Latency: 약 **54.13초**
+
+> `23/24`는 사람 사용자 성공률이 아니라 **합성 Company Profile 기반 Actual Model Task 실행 결과**입니다.
+
+평가 과정과 지표 정의는 [`docs/05-테스트-평가.md`](./docs/05-테스트-평가.md)에 자세히 정리했습니다.
 
 **Backend 테스트**
 
