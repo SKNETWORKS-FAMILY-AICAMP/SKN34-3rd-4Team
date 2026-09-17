@@ -453,6 +453,7 @@ flowchart TB
 **이 구조가 이 서비스의 전제입니다.** `bid_notices`(공고) 아래 `bid_notice_versions`(차수)를 두고 덮어쓰지 않습니다. 공고를 덮어쓰면 1차와 2차를 비교할 수 없고, 변경 재검증이 원천적으로 불가능해집니다.
 
 ```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#FFFFFF','primaryBorderColor':'#2F6FE4','primaryTextColor':'#123A6B','lineColor':'#8792B5','tertiaryColor':'#F6F8FC','fontSize':'15px'}}}%%
 erDiagram
     BID_NOTICES ||--o{ BID_NOTICE_VERSIONS : "차수 (덮어쓰지 않음)"
     BID_NOTICE_VERSIONS ||--o{ NOTICE_DOCUMENTS : "첨부"
@@ -464,6 +465,7 @@ erDiagram
 **검토 건 하나에 판정이 매달리는 구조** — 회사와 공고가 만나 검토 건이 되고, 그 아래로 판정 · Ask-back · 재검증이 붙습니다.
 
 ```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#FFFFFF','primaryBorderColor':'#2F6FE4','primaryTextColor':'#123A6B','lineColor':'#8792B5','tertiaryColor':'#F6F8FC','fontSize':'15px'}}}%%
 erDiagram
     COMPANIES ||--o{ PREFLIGHT_CASES : "검토 건"
     BID_NOTICES ||--o{ PREFLIGHT_CASES : "검토 건"
@@ -501,11 +503,13 @@ flowchart LR
     OPENAI[OpenAI API]
 
     subgraph OCI[OCI Compute]
+   
         NGINX[Nginx<br/>HTTPS · Reverse Proxy]
         WEB[Frontend<br/>Vinext Production Server]
         POLLER[공고 수집기<br/>Notice Poller]
 
         subgraph BACKEND[Backend · FastAPI]
+   
             PARSER[문서 Parsing]
             EXTRACTION[참가자격 분석<br/>Section/Keyword · LLM]
             RULE[Rule Engine]
@@ -544,6 +548,7 @@ flowchart LR
     class EXTRACTION,COPILOT llm
     class DB,STORAGE src
     class OCI,BACKEND zone
+
 ```
 
 운영 환경의 주요 처리 흐름은 다음과 같습니다.
@@ -562,20 +567,26 @@ flowchart LR
 Frontend는 Vinext 개발 서버로 실행하고, Backend API, PostgreSQL, Notice Poller는 Docker Compose로 실행합니다. 운영 환경의 OCI Object Storage 대신 로컬 Docker Volume에 첨부파일 원본을 저장합니다.
 
 ```mermaid
-flowchart LR
+flowchart TB
     USER[개발자 브라우저]
     G2B[나라장터 Open API]
     OPENAI[OpenAI API]
 
     subgraph LOCAL[Local Development PC]
+        direction TB
+   
         WEB[Frontend<br/>Vinext Dev Server :3000]
 
         subgraph DOCKER[Docker Compose]
+        direction TB
+   
             POLLER[공고 수집기<br/>Notice Poller]
             DB[(PostgreSQL)]
             STORAGE[(Docker Volume<br/>첨부파일 원본)]
 
             subgraph BACKEND[Backend · FastAPI :8000]
+        direction LR
+   
                 PARSER[문서 Parsing]
                 EXTRACTION[참가자격 분석<br/>Section/Keyword · LLM]
                 RULE[Rule Engine]
@@ -629,13 +640,17 @@ flowchart LR
 어디까지가 LLM이고 어디부터가 코드인지를 한 장으로 보면 다음과 같습니다. **노란 테두리가 LLM이 하는 일, 초록 테두리가 코드가 결정론적으로 하는 일입니다.**
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph collect["① 수집"]
+        direction LR
+   
         A[나라장터 Open API] --> B[공고 · 첨부 수집]
         B --> C[(PostgreSQL<br/>Document Storage)]
     end
 
     subgraph extract["② 자격요건 추출"]
+        direction LR
+   
         D[Document Parsing] --> E[Semantic<br/>Chunk Selection]
         E --> F["LLM Requirement<br/>Extraction"]
         F --> G["원문 대조 검증<br/>Grounding"]
@@ -643,6 +658,8 @@ flowchart LR
     end
 
     subgraph judge["③ 판정"]
+        direction LR
+   
         P[Company Profile] --> I[Rule Engine]
         I --> J[Judgment]
         J --> K{답변으로<br/>풀리는 UNKNOWN?}
@@ -650,10 +667,14 @@ flowchart LR
     end
 
     subgraph change["④ 변경 재검증"]
+        direction LR
+   
         M[변경공고] --> N[Version · Requirement<br/>Diff] --> O[영향받은<br/>Requirement]
     end
 
     subgraph rag["⑤ Document RAG"]
+        direction LR
+   
         R[Version-scoped<br/>Index] --> S["Copilot QA<br/>Citation"]
     end
 
@@ -905,7 +926,11 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 
 제품 화면 7종과 이용안내의 이동, 주요 API 연결은 구현되어 있습니다. 실제 G2와 안전한 Ask-back 답변을 포함한 전체 Human Click E2E는 최종 검증 대기 상태입니다.
 
-아래 캡처 6장은 8.2 시연 시나리오와 같은 순서입니다. 첫 장은 판정에 들어가는 입력값입니다.
+제품에 처음 들어오면 **이용안내**가 먼저 보입니다. 3단계 흐름과 화면별로 하는 일, 그리고 「이 서비스가 하지 않는 것」을 제품 안에서도 같은 문장으로 적어 두었습니다.
+
+![이용안내 화면 — 3단계 흐름과 화면별 역할, 판정 표시 4종, 하지 않는 것](docs/assets/s6-guide.png)
+
+아래 캡처 6장 중 첫 장은 판정에 들어가는 입력값이고, 나머지 5장은 8.2 시연 시나리오와 같은 순서입니다.
 
 **S0 · 회사 프로필** — 판정에 쓰이는 회사 값을 출처·갱신일과 함께 관리합니다. 비어 있는 값은 미달로 만들지 않고 「확인 필요」로 남깁니다.
 
