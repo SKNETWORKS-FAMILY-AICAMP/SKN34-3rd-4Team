@@ -105,38 +105,32 @@
 
 각 파트의 출력이 실제 사용자 흐름에서 연결되는지를 기준으로 통합했습니다.
 
-### 협업 방식
+### 협업 및 프로젝트 운영
 
-실제 개발은 다음 GitHub 중심 흐름으로 진행했습니다.
+프로젝트의 기획, 개발, 소통, 작업 관리가 분리되지 않도록  
+**GitHub 개발 흐름을 중심으로 Discord, Notion, GitHub Projects, Figma와 MCP를 역할별로 연결해 협업 환경을 구성했습니다.**
 
-```mermaid
-flowchart LR
-    A["GitHub Issue"] --> B["Feature / Fix<br/>Branch"]
-    B --> C["Pull Request"]
-    C --> D["Review / Test"]
-    D --> E["Merge"]
-    E --> F["통합 상태 확인"]
+<p align="center">
+  <img src="./docs/assets/collaboration-workflow.png"
+       width="900"
+       alt="협업 구조 및 개발 흐름">
+</p>
 
-    classDef core  fill:none,stroke:#2F6FE4,stroke-width:3px,color:#123A6B
-    classDef llm   fill:none,stroke:#DD7B2B,stroke-width:3px,color:#6B4A00
-    classDef safe  fill:none,stroke:#2E9E4F,stroke-width:2.5px,color:#0F4F39
-    classDef src   fill:none,stroke:#8792B5,stroke-width:2px,color:#2B3350
-    classDef plain fill:none,stroke:#B9BCCB,stroke-width:1.5px,color:#2B3350
-    classDef zone  fill:none,stroke:#C9CFDC,stroke-width:1px,color:#5C6270
+<p align="center">
+  <b>협업 구조 및 개발 흐름</b>
+</p>
 
-    class A,B,C,D plain
-    class E core
-    class F safe
-```
+| 도구 | 활용 방식 |
+| --- | --- |
+| **GitHub** | `Issue → Branch → Pull Request → Review / Test → Merge` 흐름을 기준으로 개발하고, 파트 간 변경 영향과 통합 상태를 함께 확인 |
+| **GitHub Projects** | Issue를 `Status`, `Priority`, `Iteration` 등으로 구조화하여 프로젝트 단위의 작업 상태와 우선순위를 관리 |
+| **Discord** | 파트별 논의, 작업현황, Blocker, Merge 요청 및 주요 결정사항을 공유하는 실시간 협업 공간으로 활용 |
+| **Discord MCP** | 누적된 팀 대화를 AI가 검색·요약할 수 있도록 연결하여 진행상황, Blocker, 파트 간 요청사항과 이전 논의 맥락을 Team Context로 활용 |
+| **Notion** | 프로젝트 기획, 기능 설계, Golden Set, 평가 기준 등 팀이 반복적으로 참고하는 문서를 정리 |
+| **Figma** | 화면 구조와 UI/UX 설계 기준을 공유하고 Frontend 구현의 공통 기준으로 활용 |
 
-- 기능 또는 수정 단위로 Branch와 Pull Request를 만들었습니다.
-- Frontend, Backend, DB/Data, LLM·RAG 간 계약과 영향 범위를 Review에서 확인했습니다.
-- 자동 테스트 통과와 실제 사용자 E2E 완료를 같은 의미로 처리하지 않았습니다.
-- GitHub Projects는 후반부에 일부 Issue와 작업 상태를 연결하는 보조 수단으로 사용했습니다.
-- Figma는 화면 기준 공유, Discord는 진행 상황과 Blocker 공유, Notion은 기획·설계 문서 정리에 사용했습니다.
-
-> 협업의 중심은 도구의 수가 아니라 **Issue → Branch → Pull Request → Review / Test → Merge** 흐름입니다.
-
+> 각 도구를 독립적으로 사용하는 것이 아니라  
+> **소통 → 작업 구조화 → 개발·리뷰 → 통합 → 문서화가 이어지는 협업 흐름**을 만드는 데 초점을 두었습니다.
 ---
 
 ## 📌 2. 프로젝트 개요
