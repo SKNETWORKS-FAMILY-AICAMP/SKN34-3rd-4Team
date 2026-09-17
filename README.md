@@ -153,7 +153,7 @@
 한 번 판정하고 끝나는 직선이 아닙니다. **정보가 부족하면 Ask-back으로, 공고가 바뀌면 재검증으로 판정 단계에 다시 돌아옵니다.**
 
 <p align="center">
-  <img src="./docs/assets/all-flow.png"
+  <img src="./docs/assets/eligibility-revalidation-flow.png"
        width="900"
        alt="전체 흐름">
 </p>
@@ -452,7 +452,7 @@
 공고 정보, 추출 텍스트, 분석 및 판정 결과 등 구조화 데이터는 Supabase PostgreSQL에 저장하고, 수집된 첨부파일 원본은 OCI Object Storage에 저장합니다.
 
 <p align="center">
-  <img src="./docs/assets/system-architecture-production"
+  <img src="./docs/assets/system-architecture-production.png"
        width="900"
        alt="시스템 아키텍처">
 </p>
@@ -473,7 +473,7 @@
 Frontend는 Vinext 개발 서버로 실행하고, Backend API, PostgreSQL, Notice Poller는 Docker Compose로 실행합니다. 운영 환경의 OCI Object Storage 대신 로컬 Docker Volume에 첨부파일 원본을 저장합니다.
 
 <p align="center">
-  <img src="./docs/assets/system-architecture-local"
+  <img src="./docs/assets/system-architecture-local.png"
        width="900"
        alt="시스템 아키텍처">
 </p>
@@ -494,7 +494,7 @@ Frontend는 Vinext 개발 서버로 실행하고, Backend API, PostgreSQL, Notic
 어디까지가 LLM이고 어디부터가 코드인지를 한 장으로 보면 다음과 같습니다. **노란 테두리가 LLM이 하는 일, 초록 테두리가 코드가 결정론적으로 하는 일입니다.**
 
 <p align="center">
-  <img src="./docs/assets/ai-rule-design-flow"
+  <img src="./docs/assets/ai-rule-design-flow.png"
        width="900"
        alt="AI Rule 설계">
 </p>
@@ -760,7 +760,7 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 로그인으로 들어와 제품 화면 8종이 이어지는 순서입니다. **한 번 판정하고 끝나는 직선이 아니라, 확인 필요와 변경 이력에서 판정 화면으로 되돌아옵니다.**
 
 <p align="center">
-  <img src="./docs/assets/ux-flow"
+  <img src="./docs/assets/ux-flow.png"
        width="900"
        alt="화면 흐름">
 </p>
