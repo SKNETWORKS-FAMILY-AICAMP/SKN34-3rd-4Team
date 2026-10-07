@@ -94,7 +94,7 @@
 | 요구사항 | 비기능 11건 · 기능 **70건**(8영역) |
 | 제품 화면 | **8종** |
 
-핵심 업무 화면 7종 + 이용안내 `/guide` 1종 = 사용자 제품 화면 8종입니다. 로그인은 인증 진입 화면으로 별도 취급합니다.
+핵심 업무 화면 7종 + 이용안내 `/guide` 1종 = 사용자 제품 화면 8종입니다. 로그인은 인증 진입 화면으로 별도 취급하며, `/workbench`는 초기 3분할 점검 화면을 보존한 레거시 경로로 제품 화면 8종에 포함하지 않습니다.
 
 > 각 수치는 서로 다른 평가를 의미합니다.  
 > `110/138`은 Canonical Requirement를 직접 입력한 **Rule 회귀**,  
@@ -1051,12 +1051,12 @@ PARTIAL 1건은 잘못된 Fact 참조가 포함된 추천 Claim을 Validation �
 
 **Current — 최신 CI 검증**
 
-출처: 개발 저장소 [`gyuniverse-hq/bid-change-validator`](https://github.com/gyuniverse-hq/bid-change-validator)의 [PR #154](https://github.com/gyuniverse-hq/bid-change-validator/pull/154) merge-ref CI (2026-10-06). 검증 merge-ref SHA는 `f30c2a1cf0002ebd6e0459ad3d4374ff078321a6`이며, Backend 실행 환경은 Python 3.12 / Linux입니다.
+출처: 개발 저장소 [`gyuniverse-hq/bid-change-validator`](https://github.com/gyuniverse-hq/bid-change-validator)의 [PR #154](https://github.com/gyuniverse-hq/bid-change-validator/pull/154) merge-ref CI (2026-10-06). 검증 merge-ref SHA는 `f30c2a1cf0002ebd6e0459ad3d4374ff078321a6`입니다. PR #154는 개발 `develop`에 merge commit [`77a9e1f25c18ec96496934cdecad19000322c24a`](https://github.com/gyuniverse-hq/bid-change-validator/commit/77a9e1f25c18ec96496934cdecad19000322c24a)으로 반영되었습니다. Backend 실행 환경은 Python 3.12 / Linux입니다.
 
 | 항목 | 결과 | 검증 기록 |
 | --- | --- | --- |
 | Backend 전체 회귀 | **924 passed** | [MVP Integration Baseline CI](https://github.com/gyuniverse-hq/bid-change-validator/actions/runs/37429939561) |
-| Copilot v1 고정 회귀 별도 실행 | **100 passed / 5 deselected** | [Copilot integration CI](https://github.com/gyuniverse-hq/bid-change-validator/actions/runs/37429939512) |
+| Copilot v1 고정 Fixture 계약 회귀 별도 실행 | **100 passed / 5 deselected** | [Copilot integration CI](https://github.com/gyuniverse-hq/bid-change-validator/actions/runs/37429939512) |
 | Frontend unit | **3 passed** | [MVP Integration Baseline CI](https://github.com/gyuniverse-hq/bid-change-validator/actions/runs/37429939561) |
 | Frontend production build | **PASS** | [MVP Integration Baseline CI](https://github.com/gyuniverse-hq/bid-change-validator/actions/runs/37429939561) |
 | Golden Rule 회귀 기대값 일치 | **110 / 138** | [Golden regression CI](https://github.com/gyuniverse-hq/bid-change-validator/actions/runs/37429939528) |
