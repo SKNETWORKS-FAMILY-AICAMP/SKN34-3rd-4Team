@@ -26,7 +26,17 @@
 
 </div>
 
-구현 기준 — [`gyuniverse-hq/bid-change-validator@develop`](https://github.com/gyuniverse-hq/bid-change-validator/tree/develop) (`c26cdca`, 2026-09-14)
+**구현 기준**
+
+최종 실행 코드는 제출 저장소에 동기화되어 있습니다.
+
+- 제출 코드: [`SKNETWORKS-FAMILY-AICAMP/SKN34-3rd-4Team@main`](https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN34-3rd-4Team/tree/main)
+- 코드 동기화 기준 SHA (README 수정 전): [`12980f011d0a7a241f02fbba8e06bc30a79ca0ff`](https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN34-3rd-4Team/commit/12980f011d0a7a241f02fbba8e06bc30a79ca0ff)
+- 개발 코드 기준: [`gyuniverse-hq/bid-change-validator@develop`](https://github.com/gyuniverse-hq/bid-change-validator/tree/develop)
+- 개발 코드 기준 SHA: [`77a9e1f25c18ec96496934cdecad19000322c24a`](https://github.com/gyuniverse-hq/bid-change-validator/commit/77a9e1f25c18ec96496934cdecad19000322c24a)
+- 두 저장소의 동일 `apps/` tree: `b388928a49ee197ce3ccedc1b6be36e5770f7151`
+
+코드 동기화 기준 SHA는 README 갱신 후 `main`의 최종 SHA를 의미하지 않습니다.
 
 > 코드 구현 / 회귀 검증 / 실데이터 검수
 > 완료 여부를 구분하여 표시합니다.
@@ -68,8 +78,6 @@
 
 ---
 
-현재 ## 📊 핵심 결과 아래의 표를 아래 표로 교체합니다.
-
 ## 📊 핵심 결과
 
 | 항목 | 결과 |
@@ -82,9 +90,11 @@
 | LLM Rerank 비교 | Recall@4 **55.56%** · 성능은 높지만 지연 때문에 기본 경로 미채택 |
 | 근거 인용 Version 무결성 | **100%** |
 | Copilot Guided Job | **23 / 24 COMPLETE** · 1건 safe PARTIAL |
-| DB Snapshot | 공고 **1,132건** · 차수 **1,265건** · 첨부 **4,826건** |
+| DB Snapshot (2026-09-15) | 공고 **1,132건** · 차수 **1,265건** · 첨부 **4,826건** |
 | 요구사항 | 비기능 11건 · 기능 **70건**(8영역) |
 | 제품 화면 | **8종** |
+
+핵심 업무 화면 7종 + 이용안내 `/guide` 1종 = 사용자 제품 화면 8종입니다. 로그인은 인증 진입 화면으로 별도 취급합니다.
 
 > 각 수치는 서로 다른 평가를 의미합니다.  
 > `110/138`은 Canonical Requirement를 직접 입력한 **Rule 회귀**,  
@@ -130,7 +140,7 @@
 | 도구 | 활용 방식 |
 | --- | --- |
 | **GitHub** | `Issue → Branch → Pull Request → Review / Test → Merge` 흐름을 기준으로 개발하고, 파트 간 변경 영향과 통합 상태를 함께 확인 |
-| **GitHub Projects** | Issue를 Status, Priority, Iteration 등으로 구조화하고, MCP 기반 조회를 통해 프로젝트 상태와 작업 우선순위를 관리 |
+| **GitHub Projects** | 주요 Issue의 Status, Priority, Iteration, Owner를 연결하고, MCP 기반 조회로 상태와 우선순위를 확인하는 보조 관리 계층으로 활용 |
 | **Discord** | 파트별 논의, 작업현황, Blocker, Merge 요청 및 주요 결정사항을 공유하는 실시간 협업 공간으로 활용 |
 | **Discord MCP** | 누적된 팀 대화를 AI가 검색·요약할 수 있도록 연결하여 진행상황, Blocker, 파트 간 요청사항과 이전 논의 맥락을 Team Context로 활용 |
 | **Notion** | 프로젝트 기획, 기능 설계, Golden Set, 평가 기준 등 팀이 반복적으로 참고하는 문서를 정리 |
@@ -313,7 +323,7 @@
 | | 제품 화면 8종 구현 | Frontend | 09-09 ~ 09-14 | 공고 찾기 ~ 회사 프로필 · 이용안내 |
 | | 로그인 · 세션 인증 · 회사별 권한 | Backend · DB | 09-11 ~ 09-13 | app_users · auth_sessions |
 | | 계약조항 검토 9종 | Backend · LLM·RAG | 09-11 ~ 09-13 | contract_clause_findings |
-| | AI Copilot | LLM·RAG · 통합 | 09-12 ~ 09-14 | Copilot v3 |
+| | AI Copilot | LLM·RAG · 통합 | 09-12 ~ 09-14 | Copilot v3 → v3.1 |
 | **4. 검증** | Golden Fixture 라벨링 · 검수 | 전원 분담 | 09-11 ~ 09-14 | Golden Fixture v0.2 |
 | | 첨부 원본 재확보 130건 | DB | 09-13 | 첨부 130/130 |
 | | Flow QA 20문항 | Frontend | 09-13 | Flow QA 체크리스트 |
@@ -391,7 +401,7 @@
 
 ## 🗂️ 6. ERD
 
-도메인 테이블 **30개** + 코드표 4개. 라이브 DB 스키마와 직접 대조해 만들었고 마이그레이션 024까지 반영돼 있습니다.
+public 스키마는 도메인 테이블 **30개** + 코드/시스템 테이블 **4개**, 총 **34개**입니다. 코드/시스템 테이블은 코드표 3개(`industry_codes`, `institution_codes`, `product_codes`)와 Alembic 버전 테이블 1개(`alembic_version`)입니다. 라이브 DB 스키마와 직접 대조해 만들었고 마이그레이션 **001~022**까지 반영돼 있습니다.
 
 ### 도메인 지도
 
@@ -636,13 +646,13 @@ Server Fact / Document Source
 ## 📁 프로젝트 구조
 
 ```
-bid-change-validator/
+SKN34-3rd-4Team/
 ├── apps/api/     # FastAPI — 수집 · 추출 · 판정 · Copilot · 문서 RAG
 ├── apps/web/     # vinext(Vite + RSC) — 제품 화면 8종
 ├── services/     # 문서 파싱
 ├── db/ data/     # 시드 · 마스터 코드
 ├── contracts/    # 파트 간 계약
-├── docs/         # 01_product ~ 09_roadmap
+├── docs/         # 프로젝트 개요 · 아키텍처 · Golden · AI · 평가 · 협업 · 트러블슈팅 · 데이터 · assets
 └── samples/golden/
 ```
 
@@ -652,10 +662,10 @@ bid-change-validator/
 <br>
 
 ```
-bid-change-validator/
+SKN34-3rd-4Team/
 ├── apps/
 │   ├── api/                      # FastAPI 백엔드
-│   │   ├── alembic/versions/     # 마이그레이션 001~024
+│   │   ├── alembic/versions/     # 마이그레이션 001~022
 │   │   ├── app/
 │   │   │   ├── ai/               # LLM 추출 · 계약조항 검토 · 품질 평가
 │   │   │   ├── copilot/          # AI Copilot (의도 분류 · 도구 · 답변)
@@ -677,7 +687,7 @@ bid-change-validator/
 ├── db/                           # 시드 · 마스터 코드
 ├── data/                         # 마스터 데이터
 ├── contracts/                    # 파트 간 계약
-├── docs/                         # 01_product ~ 09_roadmap
+├── docs/                         # 제출 문서 · 데이터 수집/전처리 · assets
 ├── samples/golden/               # Golden Fixture
 ├── infra/
 ├── scripts/
@@ -690,7 +700,7 @@ bid-change-validator/
 
 ## ⚙️ 실행 방법
 
-> 아래 명령은 실제 개발 저장소 [`gyuniverse-hq/bid-change-validator`](https://github.com/gyuniverse-hq/bid-change-validator/tree/develop)의 `develop` 브랜치 기준입니다. 현재 공식 제출 저장소에는 코드가 동기화되지 않았으므로 이 저장소에서 바로 실행할 수 없습니다.
+> 현재 제출 저장소에도 최종 실행 코드가 동기화되어 있으므로 이 저장소를 clone하여 아래 명령으로 실행할 수 있습니다. API Key, DB 연결과 환경변수는 별도로 설정해야 합니다.
 
 ### 요구 환경
 
@@ -876,7 +886,7 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 | 2026-09-13 회귀 | 110/138 (79.7%) | 28/138 (20.3%) | 0건 | 37/40 (92.5%) | 보류 6건을 확정으로 옮기면서 오판 0건 유지 |
 | 2026-09-16 재확인 | 110/138 (79.7%) | 28/138 (20.3%) | 0건 | 37/40 (92.5%) | 업종 마스터 14건 수정 후 재확인 · 변동 없음 · Golden gate 통과 |
 
-**최신 측정 근거**
+**Golden 측정 근거 (2026-09-15 Snapshot)**
 
 | 항목 | 값 |
 | --- | --- |
@@ -907,7 +917,7 @@ pnpm exec vinext start --hostname 0.0.0.0 --port 3000
 | Rule / Judgment | 기대값 일치, safe abstention, wrong determinate | 회귀 기준선 운영 |
 | Requirement Extraction | 합성 selection harness와 실제 snapshot 확보 | 최종 실공고 라벨·F1 미확정 |
 | Document RAG | Recall@4, Citation 구조·버전 무결성 | 정량 평가 수행, 의미 정답률 별도 검수 필요 |
-| AI Copilot | Routing 및 시나리오 계약 평가 | 사용자 Task 평가 대기 |
+| AI Copilot | Routing·시나리오 계약 및 합성 Profile 기반 Actual Model Guided Job 평가 | **23 / 24 COMPLETE** · Human User Test 미완료 |
 | 변경공고 G2 | 실제 변경 후보와 원문 Diff | Human Validation 진행 중 |
 | User E2E | 화면 Route와 일부 흐름 | 전체 성공 시나리오 검증 대기 |
 
@@ -1039,7 +1049,26 @@ PARTIAL 1건은 잘못된 Fact 참조가 포함된 추천 Claim을 Validation �
 
 평가 과정과 지표 정의는 [`docs/05-테스트-평가.md`](./docs/05-테스트-평가.md)에 자세히 정리했습니다.
 
-**Backend 테스트**
+**Current — 최신 CI 검증**
+
+출처: 개발 저장소 [`gyuniverse-hq/bid-change-validator`](https://github.com/gyuniverse-hq/bid-change-validator)의 [PR #154](https://github.com/gyuniverse-hq/bid-change-validator/pull/154) merge-ref CI (2026-10-06). 검증 merge-ref SHA는 `f30c2a1cf0002ebd6e0459ad3d4374ff078321a6`이며, Backend 실행 환경은 Python 3.12 / Linux입니다.
+
+| 항목 | 결과 | 검증 기록 |
+| --- | --- | --- |
+| Backend 전체 회귀 | **924 passed** | [MVP Integration Baseline CI](https://github.com/gyuniverse-hq/bid-change-validator/actions/runs/37429939561) |
+| Copilot v1 고정 회귀 별도 실행 | **100 passed / 5 deselected** | [Copilot integration CI](https://github.com/gyuniverse-hq/bid-change-validator/actions/runs/37429939512) |
+| Frontend unit | **3 passed** | [MVP Integration Baseline CI](https://github.com/gyuniverse-hq/bid-change-validator/actions/runs/37429939561) |
+| Frontend production build | **PASS** | [MVP Integration Baseline CI](https://github.com/gyuniverse-hq/bid-change-validator/actions/runs/37429939561) |
+| Golden Rule 회귀 기대값 일치 | **110 / 138** | [Golden regression CI](https://github.com/gyuniverse-hq/bid-change-validator/actions/runs/37429939528) |
+| Safe Abstention | **28 / 138** | [Golden regression CI](https://github.com/gyuniverse-hq/bid-change-validator/actions/runs/37429939528) |
+| Wrong Determinate | **0** | [Golden regression CI](https://github.com/gyuniverse-hq/bid-change-validator/actions/runs/37429939528) |
+
+Golden Fixture SHA-256: `552eb031612e5004efc67adbaeb0f015fad73de714e807014c4cf61d391efe9c`.
+
+> Copilot 100건은 Backend 전체 회귀에 포함된 고정 Fixture 테스트를 별도로 실행한 결과이므로 **924건에 합산하지 않습니다**. 합성 Company Profile 기반 Guided Job Actual Model `23/24`와도 평가 대상이 다릅니다. 위 CI 기록은 개발 저장소에서 실행한 결과입니다.
+
+<details>
+<summary><b>Historical Snapshot — Backend 로컬 검증 (2026-09-16)</b></summary>
 
 | 항목 | 값 |
 | --- | --- |
@@ -1048,8 +1077,9 @@ PARTIAL 1건은 잘못된 Fact 참조가 포함된 추천 Claim을 Validation �
 | 측정 일자 | 2026-09-16 |
 | 실행 환경 | Python 3.14 로컬 (`PYTHONIOENCODING=utf-8`) |
 
-> 로컬 실행 기준입니다. CI(Linux)는 환경 차이로 통과 수가 몇 건 다를 수 있습니다.
-> PR CI 결과로 구분해 기록할 예정입니다.
+> 당시 로컬 실행의 Historical Snapshot입니다. 최신 CI 결과와 측정 시점·커밋·실행 환경을 구분해 보존합니다.
+
+</details>
 
 ### 8.5 프로젝트 결과
 
@@ -1175,14 +1205,14 @@ PARTIAL 1건은 잘못된 Fact 참조가 포함된 추천 Claim을 Validation �
 | Ask-back | 구현·회귀 확인 | 실공고 safe-answer E2E 대기 |
 | Evidence 연결 | 구현 | 의미 단위 정확도 검수 진행 |
 | Requirement Diff·재검증 | 구현·합성 회귀 통과 | 실제 G2 Human Validation 진행 |
-| AI Copilot | 현재 Case 중심 조회·확인형 Action 구현 | 사용자 Task 평가 대기 |
+| AI Copilot | Guided Job·자유 입력·Claim Validation·확인형 Action 구현 | 합성 Profile 기반 Actual Model Guided Job **23 / 24 COMPLETE** · Human User Test 미완료 |
 | 제품 화면 8종 | Route와 주요 API 연결 | 전체 Human Click E2E 대기 |
 | 배포 | vinext + nginx 구성 운영 중 | 배포 자동화 미확정 |
 
 ### 현재 한계
 
 - Golden Fixture의 기대값은 독립 검수자 승인 전 초안이며, 실제 변경공고 G2도 Ground Truth 확정 전입니다.
-- Requirement Extraction·Copilot·사용자 E2E의 최종 성능 수치는 아직 확정하지 않았습니다.
+- Requirement Extraction의 독립 실공고 정답 라벨/F1, Copilot Human Task Completion, 전체 사용자 E2E 최종 지표는 아직 확정하지 않았습니다.
 - 동일 입력에서 Requirement 추출 결과가 실행마다 달라지는 문제를 확인했고 개선 진행 중입니다.
 - Document RAG는 현재 공고 버전 범위에서 동작하며 cross-version QA는 지원하지 않습니다.
 - 평가 대응 화면은 참가자격 기반 참고 정보이며 평가항목 전용 추출이나 점수 예측 기능이 아닙니다.
@@ -1192,8 +1222,8 @@ PARTIAL 1건은 잘못된 Fact 참조가 포함된 추천 Claim을 Validation �
 - 추출 결정성 확보 — 같은 입력에서 같은 Requirement가 나오도록
 - 실제 공고 Requirement·Evidence 라벨 독립 검수와 Extraction 평가
 - 변경공고 G2 Ground Truth 확정 및 전체 재검증 E2E
-- Copilot 사용자 Task 평가와 문서 QA 품질 개선
-- 대표 UI, 최종 아키텍처, 배포 결과 확정 후 README 반영
+- Copilot Human User Test와 문서 QA 품질 개선
+- Copilot latency 개선과 배포 자동화
 
 ---
 
